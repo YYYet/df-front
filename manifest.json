@@ -1,5 +1,5 @@
 {
-    "name" : "若依移动端",
+    "name" : "大方移动端",
     "appid" : "__UNI__25A9D80",
     "description" : "",
     "versionName" : "1.1.0",
@@ -60,7 +60,7 @@
             "port" : 9090,
             "https" : false
         },
-        "title" : "RuoYi-App",
+        "title" : "df-App",
         "router" : {
             "mode" : "hash",
             "base" : "./"

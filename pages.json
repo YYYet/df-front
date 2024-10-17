@@ -7,7 +7,7 @@
   }, {
     "path": "pages/index",
     "style": {
-      "navigationBarTitleText": "若依移动端框架",
+      "navigationBarTitleText": "移动端框架",
       "navigationStyle": "custom"
     }
   }, {
@@ -65,7 +65,56 @@
     "style": {
       "navigationBarTitleText": "浏览文本"
     }
-  }],
+  }   
+        ,{
+            "path" : "pages/work/deliveryRequisition/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "配送申请单",
+                "enablePullDownRefresh": false,
+				   "app-plus": {
+				      "titleNView": {
+				        "buttons": [
+				          {
+				            // "fontSrc": "static/unicons.ttf",
+				            "text": "查询",
+				            "fontSize": "10px"
+				          }
+				        ]
+				      }
+				    }
+            }
+			
+            
+        }
+        ,{
+            "path" : "pages/work/deliveryRequisition/billInfo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "配送申请单详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/common/cardv1/cardv1",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/common/cardv2/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
   "tabBar": {
     "color": "#000000",
     "selectedColor": "#000000",
@@ -86,7 +135,7 @@
   },
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "RuoYi",
+    "navigationBarTitleText": "df",
     "navigationBarBackgroundColor": "#FFFFFF"
   }
 }

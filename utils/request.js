@@ -51,7 +51,14 @@ const request = config => {
         } else if (code === 500) {
           toast(msg)
           reject('500')
-        } else if (code !== 200) {
+        } else if (code === 408) {
+			showConfirm(msg).then(res => {
+			  if (res.confirm) {
+				uni.reLaunch({ url: '/pages/login' })
+			  }
+			})
+		   reject(msg)
+		}else if (code !== 200) {
           toast(msg)
           reject(code)
         }

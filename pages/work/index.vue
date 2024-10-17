@@ -15,7 +15,7 @@
     <uni-section title="系统管理" type="line"></uni-section>
     <view class="grid-body">
       <uni-grid :column="4" :showBorder="false" @change="changeGrid">
-        <uni-grid-item  v-for="(item, index) in menuList" :key="index">
+        <uni-grid-item  v-for="(item, index) in menuList" :index="index" :key="index">
           <view class="grid-item-box">
             <uni-icons type="list" size="30"></uni-icons>
             <text class="text" v-text="item.MENUNAME">xxxx</text>
@@ -112,10 +112,10 @@
         this.current = e.detail.current
       },
       changeGrid(e) {
-		 // console.log(e);
+		 console.log(e);
 		  if( e.detail.index == 0){
-			 //  this.$tab.navigateTo('/pages/mine/about/index')
-			 this.$modal.showToast('模块建设中~')
+			   this.$tab.navigateTo('/pages/work/deliveryRequisition/index')
+			// this.$modal.showToast('模块建设中~')
 		  }
 	
         //this.$modal.showToast('模块建设中~')
