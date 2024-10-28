@@ -73,6 +73,8 @@
                 "navigationBarTitleText": "配送申请单",
                 "enablePullDownRefresh": false,
 				   "app-plus": {
+					   // "animationType": "fade-in",
+					   // 		"animationDuration": 1300,
 				      "titleNView": {
 				        "buttons": [
 				          {
@@ -91,6 +93,9 @@
             "path" : "pages/work/deliveryRequisition/billInfo",
             "style" :                                                                                    
             {
+					// "app-plus": {
+					// 					   "animationType": "fade-in",
+					// 					   		"animationDuration": 1300},
                 "navigationBarTitleText": "配送申请单详情",
                 "enablePullDownRefresh": false
             }
@@ -107,6 +112,54 @@
         }
         ,{
             "path" : "pages/common/cardv2/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/common/cardv3/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/work/deliveryRequisition/filter",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"navigationBarTitleText": "货品筛选"
+            }
+            
+        }
+        ,{
+            "path" : "pages/common/shop-cart/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/work/deliveryRequisition/edit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				  "navigationBarTitleText": "新建配送申请单"
+            }
+            
+        }
+       
+        ,{
+            "path" : "pages/common/filterv2/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",

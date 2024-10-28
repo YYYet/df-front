@@ -1,9 +1,7 @@
 <template>
-	<view>
+<view class="page fade" animation="slide-in-right">
+        <view class="content">
 			<uni-card :is-shadow="false" :title="billNumber">
-			
-	
-			
 				<uni-row class="demo-uni-row"  >
 					<uni-col :span="12">
 						<view class=" light">
@@ -98,36 +96,55 @@
 				</uni-row>	
 			</uni-card>
 			
-			<uni-row   >
-				<uni-col :span="12" style="text-align: center;">
-					<view>
-						<text class="text"  >共 x 条数据</text>
+			<uni-row>
+				<uni-col :span="12" style="text-align: left;">
+					<view style="margin-left: 10%;">
+						共<text class="text" v-text="'  '+ materialListSize+'  '" style="color: skyblue;" width="50rpx"></text>条数据
+					</view>
+				</uni-col>
+				<uni-col :span="12" style="text-align: right;">
+					<view style="margin-right: 10%;">
+						<text class="text" style="color: skyblue;" @click="gotoFilter()">筛选</text>
 					</view>
 				</uni-col>
 			</uni-row>	
-			<uni-row   >
+			
+			<uni-row>
 				<uni-col :span="12" style="text-align: center;">
 					<view>
 						<text class="text" >货物总重量:0(KG)</text>
 					</view>
 				</uni-col>
 				<uni-col :span="12" style="text-align: center; " >
-					<text class="text"  >货物总体积:0(m”)</text>
+					<text class="text">货物总体积:0(m)</text>
 				</uni-col>
 			</uni-row>	
-			<uni-card :is-shadow="false" >
-				<uni-row>
-					xxxxxxxxxxxx
-				</uni-row>	
-			</uni-card>
-	</view>
+			
+			<uni-row v-for="(item, index) in materialList" :key="index">
+				<cardv3 :baseFormData="item"></cardv3>
+			</uni-row>
+</view>
+</view>
 </template>
 
 <script>
+	import cardv3 from '../../common/cardv3/index.vue'
 	export default {
+			 components: {
+				    // 注册组件
+				    'cardv3': cardv3
+				  },
 		data() {
 			return {
-				billNumber: ''
+				billNumber: '',
+				materialListSize: 5,
+				materialList: [
+					{orderWarehouse:"测试1",remark:"备注1",number:100,unit:"个"},
+					{orderWarehouse:"测试2",remark:"备注2",number:300,unit:"只"},
+					{orderWarehouse:"测试3",remark:"备注3",number:200,unit:"捆"},
+					{orderWarehouse:"测试3",remark:"备注3",number:200,unit:"捆"},
+					{orderWarehouse:"测试3",remark:"备注3",number:200,unit:"捆"}
+				]
 			}
 		},
 		  onLoad(query) {
@@ -137,11 +154,14 @@
 		    console.log(this.billNumber);
 		  },
 		methods: {
-			
+			gotoFilter(){
+				this.$tab.navigateTo('/pages/work/deliveryRequisition/filter')
+				
+			}
 		}
 	}
 </script>
 
-<style>
+<style lang="scss">
 
 </style>

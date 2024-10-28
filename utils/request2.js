@@ -16,6 +16,8 @@ export function queryList(data) {
 	return _queryList2(data, listCount);
 }
 
+
+
 // 查询超长列表数据
 function queryListLong(data) {
 	const listCount = 100000;
@@ -34,7 +36,7 @@ function queryChatListLong(data) {
 	return _queryList(data, listCount, false, false, true);
 }
 
-// 查询tabs数据
+// // 查询tabs数据
 export function queryTabs(data) {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
@@ -42,6 +44,48 @@ export function queryTabs(data) {
 		}, loadingTime)
 	})
 }
+
+function queryMaterialListByTab(data) {
+	const listCount = 24;
+	return _queryMaterialList(data, listCount);
+}
+function queryTabsList(data) {
+	const listCount = 40;
+	return _queryTabsList(data, listCount);
+}
+
+function _queryTabsList(data, listCount){
+	var l = [];
+	for (var i = 0; i < listCount; i++) {
+		l[i] = {"name": '测试'+i, "id":i};
+	}
+	return _callQueryResult(l);
+	
+	// return new Promise((resolve, reject) => {
+	// 	setTimeout(() => {
+	// 		var l = [];
+	// 		for (var i = 0; i < listCount; i++) {
+	// 			l[i] = '测试'+i;
+	// 		}
+	// 		resolve(l);
+	// 	}, loadingTime)
+	// })
+}
+function _queryMaterialList(data, listCount){
+	var l = [];
+			for (var i = 0; i < listCount; i++) {
+				  let randomNum = Math.random();
+				  let uniqueId = (randomNum * 1000000000).toFixed(0);
+				l[i] = {"title":data.tabName+""+i,"price":Math.floor(Math.random()*100),
+				"goods":data.tabName+""+i,"nums":0,"id": uniqueId.padStart(10, '0'),
+				"unit": Math.floor(Math.random()*100) >= 50 ? "个" : "副","description":"描述"+i,
+				"storageInTransitNums":0,
+				"storageNums":0,"model":"x/y/z","step":Math.floor(Math.random()*10)+1};
+			}
+				return _callQueryResult(l);
+}
+
+
 function _queryList2(data, listCount, showNews = false ,random = false, showChat = false) {
 	if (!data.pageNo || !data.pageSize) {
 		return _callQueryResult([]);
@@ -209,5 +253,7 @@ export default {
 	queryListLong,
 	queryChatList,
 	queryChatListLong,
+	queryTabsList,
+	queryMaterialListByTab,
 	queryTabs
 }

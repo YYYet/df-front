@@ -117,7 +117,10 @@
 			   this.$tab.navigateTo('/pages/work/deliveryRequisition/index')
 			// this.$modal.showToast('模块建设中~')
 		  }
-	
+	if( e.detail.index == 1){
+				   
+				// this.$modal.showToast('模块建设中~')
+	}
         //this.$modal.showToast('模块建设中~')
       }
     }

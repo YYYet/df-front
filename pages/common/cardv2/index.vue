@@ -11,7 +11,7 @@
 								<text class="text"  style="text-align: left; text-align: center;color: darkgrey;">到货时间</text>
 							</view>
 						</uni-col>
-						<uni-col :span="12">
+						<uni-col :span="14">
 							<view class=" light">
 								<uni-forms >
 									<uni-forms-item label="订货仓库:" label-width="auto" class="item"  err-show-type="none" label-align="center" >
@@ -26,7 +26,7 @@
 								</uni-forms>
 							</view>
 						</uni-col>
-						<uni-col :span="6">
+						<uni-col :span="4">
 							<view class=" light">
 								<text class="text" style="text-align: right;" v-text="baseFormData.status"></text>
 							</view>

@@ -144,6 +144,7 @@
 								title: '点击了悬浮按钮',
 								icon: 'none'
 							})
+									 this.$tab.navigateTo('/pages/work/deliveryRequisition/edit')
 						},
 			tabChange(index) {
 				this.tabIndex = index;
@@ -180,7 +181,9 @@
 	}
 </script>
 
-<style scoped>
+<style scoped >
+
+	
 	.item {
 		position: relative;
 		display: flex;

@@ -2,7 +2,9 @@ export default {
   // 关闭所有页面，打开到应用内的某个页面
   reLaunch(url) {
     return uni.reLaunch({
-      url: url
+      url: url,
+	  animationType: 'pop-in',
+	    animationDuration: 300
     })
   },
   // 跳转到tabBar页面，并关闭其他所有非tabBar页面

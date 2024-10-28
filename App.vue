@@ -4,10 +4,24 @@
   import { getToken } from '@/utils/auth'
 
   export default {
+	    data() {
+	      return {
+	        isPageVisible: true
+	      };
+	    },
     onLaunch: function() {
       this.initApp()
     },
+	
     methods: {
+	  togglePageVisibility() {
+	      this.isPageVisible = !this.isPageVisible;
+	      const animationClass = this.isPageVisible ? 'slide-in-from-right' : '';
+	      document.body.className = animationClass;
+	    },
+		 mounted() {
+		    this.togglePageVisibility();
+		  },
       // 初始化应用
       initApp() {
         // 初始化应用配置
@@ -30,5 +44,7 @@
 </script>
 
 <style lang="scss">
-  @import '@/static/scss/index.scss'
+  @import '@/static/scss/index.scss';
+  @import '@/static/scss/animations.scss';
+
 </style>
