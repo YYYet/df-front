@@ -6,7 +6,7 @@
 			@virtualTopHeightChange="virtualTopHeightChange" show-refresher-update-time>
 			<template #top>
 				<view class="header">列表总数据量：{{total}}条</view>
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabChange"  :current="tabIndex"/>
 			</template>
 			<template #cell="{item,index}">
 				<view class="item">
@@ -165,6 +165,12 @@
 		},
 		onShow() {
 
+		},
+		onLoad() {
+			uni.$on('selectTab', (tabIndex) => {
+				console.log("selectTab",tabIndex)
+				this.tabChange(tabIndex);
+			});	
 		},
 		methods: {
 			trigger(e) {

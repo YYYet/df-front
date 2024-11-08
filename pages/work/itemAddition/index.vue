@@ -74,7 +74,8 @@
 		},
 		onShow() {
 			console.log("onShow fromPage and refeshTabBadgeByNet", this.$store.state.data.fromPage)
-			
+		
+			console.log("onshow uni.getStorageSync('tabBadgeCacheV2');", 	uni.getStorageSync('tabBadgeCacheV2'))
 			this.refeshTabBadgeAndBottomNumsByNet()
 		},
 		mounted() {
@@ -100,34 +101,52 @@
 				})
 			},
 			submit() {
-				this.$modal.msg("模拟提交");
+				// this.$modal.msg("模拟提交");
 				let list = [];
+				// 显示加载框
+				uni.showLoading({
+				  title: '正在提交'
+				});
 				getMaterialAddedV2(1, 99999).then(res => {
 					list = res.result;
-					console.log("获取最新选购的物品");
-					uni.setStorageSync("materialDataAdded", list);
-					
-					let applicationTemplate = uni.getStorageSync("applicationTemplate")
-					
-					const data = {
-						note: "222",
-						reviceOrgNumber: applicationTemplate.orgNumber,
-						applyOrgNumber: applicationTemplate.orgNumber,
-						applyDate: new Date(),
-						arrivalDate: applicationTemplate.arrivalDate,
-						entry: list
-					};
-					
-						console.log("saveData", applicationTemplate, data)
-						saveApplyGood(data).then(res=>{
-							console.log("saveApplyGood", res)
-						})
-				});
-		
-			
-				// saveApplyGood({"test":"1"}).then(res=>{
-				// 	console.log("saveApplyGood", res)
-				// })
+						console.log("获取最新选购的物品");
+						uni.setStorageSync("materialDataAdded", list);
+						
+						let applicationTemplate = uni.getStorageSync("applicationTemplate")
+						
+						const data = {
+							note: "222",
+							reviceOrgNumber: applicationTemplate.orgNumber,
+							applyOrgNumber: applicationTemplate.orgNumber,
+							applyDate: new Date(),
+							arrivalDate: applicationTemplate.arrivalDate,
+							entry: list
+						};
+						
+							console.log("saveData", applicationTemplate, data)
+							saveApplyGood(data).then(res=>{
+								console.log("saveApplyGood", res)
+								clearShopV2().then(res => {
+									// uni.$emit("clearShopCart")
+									this.$modal.msg("提交成功");
+									
+									uni.hideLoading();
+									this.$tab.navigateBackPage(2)
+									uni.$emit('selectTab', 1);	
+							
+									
+								}).catch(res=>{
+										uni.hideLoading();
+								})
+						
+							}).catch(res=>{
+								this.$modal.msg("提交失败"+res);
+								uni.hideLoading();
+							})
+					}).catch(res=>{
+						this.$modal.msg("提交失败"+res);
+						uni.hideLoading();
+					});
 			},
 			getLastPage() {
 				let pages = getCurrentPages(); // 获取当前页面栈的实例
@@ -165,7 +184,7 @@
 			},
 			getData() {
 
-				getMaterialTabs().then(res => {
+				getMaterialTabs(0).then(res => {
 					console.log("queryTabsList", res)
 					this.columns = res.result
 					// this.$store.commit("SET_TAB_LIST", this.columns)

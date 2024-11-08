@@ -7,7 +7,13 @@ export function getMaterialTabs() {
     method: 'get'
   })
 }
-
+export function getMaterialTabsByGroupId(groupId) {
+	console.log("groupId", groupId)
+  return request({
+    url: '/system/material/getTabs?pid='+groupId,
+    method: 'get'
+  })
+}
 export function getMaterialByTab(groupId, page, pageSize) {
   return request({
     url: '/system/material/getMaterialByTabV2?groupId='+groupId+"&page="+page+"&pageSize="+pageSize,
