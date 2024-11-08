@@ -139,7 +139,7 @@
             
         }
         ,{
-            "path" : "pages/common/shop-cart/index",
+            "path" : "pages/work/itemAddition/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -160,6 +160,51 @@
        
         ,{
             "path" : "pages/common/filterv2/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/common/cartshop/cartshop-swiper-item/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/common/material-info/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/work/purchasedItemsViewer/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/common/cartshop/cartshop-search/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/work/test/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",

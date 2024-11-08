@@ -78,3 +78,5 @@ export function uploadAvatar(data) {
     filePath: data.filePath
   })
 }
+
+

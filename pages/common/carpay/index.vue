@@ -3,14 +3,13 @@
         <view class="h-110"></view>
         <view class="h-110 fcb px-32 safe-padding operation bg-white">
             <view class="flex items-center">
-                <view class="cart">
+                <view class="cart" @click="clickCart">
                     <view class="badge">{{goodsNum}}</view>
                 </view>
                 <view class="ml-25 text-30">￥{{goodsTotalPrice}}</view>
             </view>
             <view class="fcc">
-                <view
-                        class="pay fcc text-30 h-80 text-white "
+                <view class="pay fcc text-30 h-80 text-white "
                         @click="submit">提交
                 </view>
             </view>
@@ -45,8 +44,12 @@ export default {
     },
     methods:{
         submit(){
-            this.$emit('ok')
-        }
+            this.$emit('submit')
+        },
+		clickCart(){
+			console.log("cart-pay clickCart")
+			this.$emit("clickCart")
+		}
     }
 }
 </script>

@@ -14,6 +14,12 @@
     },
 	
     methods: {
+	  formatDateV2(value){
+			if (value) {
+			  const date = new Date(value);
+			  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+			}
+	  },
 	  togglePageVisibility() {
 	      this.isPageVisible = !this.isPageVisible;
 	      const animationClass = this.isPageVisible ? 'slide-in-from-right' : '';
@@ -46,5 +52,31 @@
 <style lang="scss">
   @import '@/static/scss/index.scss';
   @import '@/static/scss/animations.scss';
+  @import '@/static/css/animate.min.css';
+  
+radio .wx-radio-input {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+}
+ 
+radio .wx-radio-input::after {
+  width: 20px;
+  height: 20px;
+  display: block;
+  content: '';
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+ 
+radio .wx-radio-input:checked::after {
+  transform: translateX(50%) translateY(50%) scale(0.6);
+  background-color: #09BB07;
+}
+
+
 
 </style>

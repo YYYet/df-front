@@ -6,7 +6,7 @@
 					<uni-row class="demo-uni-row"  >
 						<uni-col :span="6">
 							<view class=" light">
-								<text class="text" v-text="baseFormData.arrivalDate" style="text-align: left; font-size: 20px; font-weight: bold; text-align: center;color: black;"></text>
+								<text class="text" v-text="formatDate(baseFormData.arrivalDate)" style="text-align: left; font-size: 20px; font-weight: bold; text-align: center;color: black;"></text>
 								<text class="text" v-text="baseFormData.arrivalTime" style="text-align: left; text-align: center; color: darkgrey;" ></text>
 								<text class="text"  style="text-align: left; text-align: center;color: darkgrey;">到货时间</text>
 							</view>
@@ -14,11 +14,11 @@
 						<uni-col :span="14">
 							<view class=" light">
 								<uni-forms >
-									<uni-forms-item label="订货仓库:" label-width="auto" class="item"  err-show-type="none" label-align="center" >
-											<text class="text" v-text="baseFormData.orderWarehouse" style="text-align: left;font-weight: bold; color: black;"></text>
+									<uni-forms-item label="订货组织:" label-width="auto" class="item"  err-show-type="none" label-align="center" >
+											<text class="text" v-text="baseFormData.orderOrg" style="text-align: left;font-weight: bold; color: black;"></text>
 									</uni-forms-item>
-									<uni-forms-item label="配送中心:" label-width="auto" class="item"   err-show-type="none" label-align="center">
-											<text class="text" v-text="baseFormData.distributionCenter" style="text-align: left;font-weight: bold; color: black;"></text>
+									<uni-forms-item label="配送组织:" label-width="auto" class="item"   err-show-type="none" label-align="center">
+											<text class="text" v-text="baseFormData.distributionOrg" style="text-align: left;font-weight: bold; color: black;"></text>
 									</uni-forms-item>
 									<uni-forms-item label="经办人:" label-width="auto"  class="item"  err-show-type="none" label-align="center">
 											<text class="text" v-text="baseFormData.agent" style="text-align: left;font-weight: bold; color: black;"></text>
@@ -28,7 +28,7 @@
 						</uni-col>
 						<uni-col :span="4">
 							<view class=" light">
-								<text class="text" style="text-align: right;" v-text="baseFormData.status"></text>
+								<text class="text" style="text-align: right;" v-text="billStatus(baseFormData.status)"></text>
 							</view>
 						</uni-col>
 					</uni-row>		
@@ -43,6 +43,10 @@
 </template>
 
 <script>
+	import {
+		formatBillStatus, formatDateV2
+	} from '@/utils/common.js'
+	
 	export default {
 		data() {
 			return {
@@ -56,7 +60,12 @@
 		  }
 		},
 		methods: {
-			
+			billStatus(status){
+				return formatBillStatus(status)
+			},
+			formatDate(v){
+				return formatDateV2(v);
+			}
 		}
 	}
 </script>

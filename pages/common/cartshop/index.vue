@@ -20,35 +20,37 @@
 			<swiper class="side-b" :current="sideCurrentIndex" @transition="swiperTransition"
 				@animationfinish="swiperAnimationfinish">
 				<swiper-item class="swiper-item" v-for="(item, index) in columns" :key="index">
-					<swiper-list-item ref="listItem" :tabIndex="index" :currentIndex="sideCurrentIndex"
-						@numberComputed="numberComputed"></swiper-list-item>
+					<cartshop-swiper-item ref="listItem" :tabIndex="index" :currentTab="columns[index]"
+						:currentIndex="sideCurrentIndex" @numberComputed="numberComputed"
+						:needNumberSelector="true"></cartshop-swiper-item>
 				</swiper-item>
 			</swiper>
 		</z-paging-swiper>
+
 	</view>
 </template>
 
 <script>
+	import cartshopSwiperItem from '@/pages/common/cartshop/cartshop-swiper-item/index.vue'
+
 	import {
-		login
-	} from '../../../../api/login'
-	import NumerCalculation from '../NumerCalculation/NumerCalculation.vue'
-	import SwiperListItem from '../swiper-list-item/swiper-list-item.vue'
+		getMaterialTabs,
+		getMaterialAddedV2
+	} from '@/api/system/material.js'
+
 	export default {
 		components: {
-			// 注册组件
-			'NumerCalculation': NumerCalculation,
-			'swiper-list-item': SwiperListItem
+			'cartshop-swiper-item': cartshopSwiperItem
 		},
 		props: {
 			data: {
 				type: Array,
 				default: () => []
 			},
-			columns: {
-				type: Array,
-				default: () => []
-			},
+			// columns: {
+			// 	type: Array,
+			// 	default: () => []
+			// },
 			defaultTab: {
 				type: String
 			},
@@ -60,7 +62,7 @@
 		},
 		data() {
 			return {
-
+				columns: [],
 				tabList: ['测试1', '测试2', '测试3', '测试4'],
 				current: 0,
 				test: 0,
@@ -73,74 +75,160 @@
 				scrollTop: 0,
 				contentHeightArr: [],
 				handleSideClick: true,
-				tabClickCache: [true],
 				tabBadgeCache: [],
-				cacheMap: [
-
-				],
-				tabsStyle: {
-					position: 'fixed',
-					top: '0',
-					left: '0',
-					bottom: '0',
-					width: '100rpx', // 设置宽度
-					flexDirection: 'column', // 设置垂直布局
-					background: '#fff' // 背景颜色
-				}
+				numsCacheList: [],
+				columnIdIndexCache: {}
 			}
 		},
+		onLoad() {
 
+		},
+		beforeDestroy() {
+			// 移除事件监听
+			uni.$off('watchDataList');
+			uni.$off('notic2refresh');
+			uni.$off('notic2tabBadgeRefresh');
+		},
+
+		onShow() {
+
+		},
+		watch: {
+			tabBadgeCache: {
+				handler(newVal) {
+					console.log("角标缓存变动", newVal);
+					uni.$emit('notic2BottomRefresh', newVal, true);
+				},
+				deep: true
+			},
+		},
+		created() {
+
+			console.log("cartshopcreated 注册watchDataList")
+			uni.$on('watchDataList', (arr) => {
+				console.log("触发watchDataList", arr, this.numsCacheList);
+				this.refeshTabBadge(arr);
+			});
+			console.log("cartshopcreated 注册notic2refresh")
+			uni.$on('notic2refresh', (item) => {
+				console.log("触发购物车数据列表刷新", item, "当前tab", this.columns);
+				let currentTabIndex = this.getTabIndexFromColumnIdIndexCache(item.groupId);
+				item.currentTabIndex = currentTabIndex;
+				console.log("当前物料所属tab下标", currentTabIndex)
+				this.$refs.listItem[currentTabIndex].numberComputedOtherBySearchPage(item)
+			});
+
+			console.log("cartshopcreated 注册notic2tabBadgeRefresh")
+			uni.$on('notic2tabBadgeRefresh', (item) => {
+				console.log("触发购物车tab角标刷新", item, this.columns);
+				this.refeshTabBadge(item);
+			});
+
+			console.log("cartshopcreated 注册clearShopCart")
+			uni.$on('clearShopCart', (item) => {
+				console.log("触发购物车清空", item);
+				this.clearCartShop();
+			});
+
+			this.sideCurrentIndex = 0;
+			uni.setStorageSync('sideCurrentIndex', 0);
+			console.log("columns", uni.getStorageSync('columns'))
+			this.columns = uni.getStorageSync('columns');
+			console.log("localColumns", this.columns)
+			for (var i = 0; i < this.columns.length; i++) {
+				// this.tabClickCache.push(false);
+				this.numsCacheList.push({})
+				this.tabBadgeCache.push(0)
+			}
+
+		},
+		onReady() {
+
+		},
 		mounted() {
 			this.getContentHeight()
-			console.log("mounted", this.columns)
-			for (var i = 0; i < this.columns.length; i++) {
-				this.tabClickCache.push(false);
-				this.cacheMap.push([])
-			}
+			console.log("mounted columns", this.columns)
 			this.sideCurrentIndex = uni.getStorageSync('sideCurrentIndex');
 			this.sideCurrentId = uni.getStorageSync('sideCurrentId');
-			// this.tabBadgeCache = uni.getStorageSync('tabBadgeCache');
-			this.tabClickCache[this.sideCurrentIndex] = true;
-			console.log("sideCurrentIndex", this.sideCurrentIndex)
+			console.log("sideCurrentIndex", this.sideCurrentIndex, "sideCurrentId", this.sideCurrentId);
 		},
 
+		beforeMount() {
+			console.log("beforeMount")
+		},
 
 		methods: {
-			// tabs通知swiper切换
-			// tabsChange(index) {
-			// 	this.sideCurrentIndex = index;
-			// 	uni.setStorageSync('sideCurrentIndex', this.sideCurrentIndex);
-			// },
+			clearCartShop(){
+				for (var i = 0; i < this.columns.length; i++) {
+					// this.$set(this.tabBadgeCache, i, 0);
+					console.log("this.$refs.listItem[i]", this.$refs.listItem[i])
+					this.$refs.listItem[i].reload();
+				}
+			},
+			refeshTabBadge(arr) {
+				console.log("arr", arr)
+				if (arr == null || arr.length == 0) {
+					for (var i = 0; i < this.columns.length; i++) {
+						this.$set(this.tabBadgeCache, i, 0);
+					}
+				}else{
+					for (var i = 0; i < arr.length; i++) {
+						let item = arr[i]
+						let currentTabIndex = this.getTabIndexFromColumnIdIndexCache(item.groupId);
+						// console.log("currentTabIndex", currentTabIndex)
+						item.currentTabIndex = currentTabIndex;
+						this.numsCacheList[item.currentTabIndex][item.id] = item.nums
+						let goodsNum = 0;
+						for (let v of Object.values(this.numsCacheList[item.currentTabIndex])) {
+							goodsNum += v
+						}
+						// console.log("当前tab角标数值", goodsNum)
+						this.$set(this.tabBadgeCache, item.currentTabIndex, goodsNum);
+					}
+				}
+			},
+			getTabIndexFromColumnIdIndexCache(groupId) {
+				let cl = uni.getStorageSync("columnIdIndexCache");
+				return cl[groupId]
+			},
+			getTabIndexFromColumns(tabId) {
+				let index = -1;
+				for (var i = 0; i < this.columns.length; i++) {
+					if (this.columns[i].id == tabId) {
+						index = i;
+					}
+				}
+				return index;
+			},
+			resetColumnsValue(columns) {
+				console.log("重置columns")
+				this.$emit('resetColumnsValue', columns);
+			},
+
 			// swiper滑动中
 			swiperTransition(e) {
 				// this.$refs.tabs.setDx(e.detail.dx);
 			},
 			// swiper滑动结束
 			swiperAnimationfinish(e) {
-				console.log("e", e)
-				this.current = e.detail.current;
-				this.sideCurrentIndex = this.current;
-				// this.$refs.tabs.unlockDx();
+				if (e.detail.source == "touch") {
+					// this.current = e.detail.current;	
+					console.log("右侧列表页码", e)
+				}
+				if (e.detail.source == "") {
+					// this.sideCurrentIndex = this.current;
+					console.log("左侧tab下标", e)
+				}
 			},
 			// 如果要通知当前展示的z-paging刷新，请调用此方法
 			reloadCurrentList() {
-				this.$refs.listItem[this.current].reload();
+				this.$refs.listItem[this.sideCurrentIndex].reload();
 			},
 
 			virtualTopHeightChange(topHeight) {
 				this.topHeight = topHeight;
 			},
-
 			numberComputed(val, index, item) {
-				console.log("创建缓存列表", this.cacheMap, this.sideCurrentIndex)
-				this.cacheMap[this.sideCurrentIndex][item.id] = item.nums
-				let goodsNum = 0;
-				for (let v of Object.values(this.cacheMap[this.sideCurrentIndex])) {
-					goodsNum += v
-				}
-				console.log("当前tab下数量", goodsNum)
-				this.$set(this.tabBadgeCache, this.sideCurrentIndex, goodsNum);
-				console.log("缓存", this.cacheMap)
 				this.$emit('numberComputed', val, index, item)
 			},
 			getContentHeight() {
@@ -168,23 +256,14 @@
 			},
 
 			handleSideAction(item, index) {
-				console.log("handleSideAction==>", item, index)
+				console.log("点击左侧tab==>", item, index)
 
 				this.handleSideClick = true
 				this.sideCurrentIndex = index
-				console.log("item==>", item)
 				this.tabName = item.name
 				uni.setStorageSync('defaultTabName', item.name);
 				uni.setStorageSync('sideCurrentIndex', this.sideCurrentIndex);
-				if (this.tabClickCache[index] == false) {
-					console.log("刷新列表")
-					this.reloadCurrentList()
-					this.tabClickCache[index] = true;
-				}
-
 				this.scrollHeight()
-
-
 			},
 			async getWrapSideHeight() {
 				return new Promise(resolve => {

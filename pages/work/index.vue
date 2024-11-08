@@ -100,6 +100,9 @@
 	  this.getSelfMenu()
 	},
     methods: {
+		test(){
+			this.$tab.navigateTo('/pages/work/test/index')
+		},
 		getSelfMenu(){
 			getPermissions().then(response => {
 				this.menuList = response.result

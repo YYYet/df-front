@@ -7,6 +7,13 @@ import './permission' // permission
 import request2 from '@/utils/request2.js'
 
 
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    const date = new Date(value);
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  }
+});
+
 Vue.use(plugins)
 
 Vue.config.productionTip = false

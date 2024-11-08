@@ -7,28 +7,28 @@
 						<view class=" light">
 							<text class="text" style="text-align: left; ">申请模板:</text>
 						</view>
-						<text class="text"  style="text-align: left; " >111</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >111</text>
 					</uni-col>
 					<uni-col :span="12">
 						<view class=" light">
 					       <text class="text" style="text-align: left;">到货时间:</text>
 					   </view>
-						<text class="text"  style="text-align: left; " >222</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >{{materialInfo.arrivalDate | formatDate}}</text>
 					</uni-col>
 				</uni-row>		
 				
 				<uni-row class="demo-uni-row"  >
 					<uni-col :span="12">
 						<view class=" light">
-							<text class="text" style="text-align: left; ">订货仓库:</text>
+							<text class="text" style="text-align: left; ">订货组织:</text>
 						</view>
-						<text class="text"  style="text-align: left; " >111</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >{{materialInfo.orderOrg}}</text>
 					</uni-col>
 					<uni-col :span="12">
 						<view class=" light">
-					       <text class="text" style="text-align: left;">配送中心:</text>
+					       <text class="text" style="text-align: left;">配送组织:</text>
 					   </view>
-						<text class="text"  style="text-align: left; " >222</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >{{materialInfo.distributionOrg}}</text>
 					</uni-col>
 				</uni-row>	
 				
@@ -37,13 +37,13 @@
 						<view class=" light">
 							<text class="text" style="text-align: left; ">经办人:</text>
 						</view>
-						<text class="text"  style="text-align: left; " >111</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >{{materialInfo.agent}}</text>
 					</uni-col>
 					<uni-col :span="12">
 						<view class=" light">
 					       <text class="text" style="text-align: left;">原因备注:</text>
 					   </view>
-						<text class="text"  style="text-align: left; " >222</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >222</text>
 					</uni-col>
 				</uni-row>	
 				
@@ -52,49 +52,49 @@
 						<view class=" light">
 							<text class="text" style="text-align: left; ">制单人:</text>
 						</view>
-						<text class="text"  style="text-align: left; " >111</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >{{materialInfo.creator}}</text>
 					</uni-col>
 					<uni-col :span="12">
 						<view class=" light">
 					       <text class="text" style="text-align: left;">制单日期:</text>
 					   </view>
-						<text class="text"  style="text-align: left; " >222</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >{{materialInfo.createDate | formatDate}}</text>
 					</uni-col>
 				</uni-row>	
 				
-				<uni-row class="demo-uni-row"  >
+		<!-- 		<uni-row class="demo-uni-row"  >
 					<uni-col :span="12">
 						<view class=" light">
 							<text class="text" style="text-align: left; ">单据图片:</text>
 						</view>
-						<text class="text"  style="text-align: left; " >111</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >111</text>
 					</uni-col>
 				
-				</uni-row>
+				</uni-row> -->
 				
 				<uni-row class="demo-uni-row"  >
 					<uni-col :span="12">
 						<view class=" light">
 							<text class="text" style="text-align: left; ">备注:</text>
 						</view>
-						<text class="text"  style="text-align: left; " >111</text>
+						<text class="text"  style="text-align: left; color: black;font-weight: bold;" >111</text>
 					</uni-col>
 				
 				</uni-row>
 			</uni-card>
 			
-			<uni-card :is-shadow="false" >
+	<!-- 		<uni-card :is-shadow="false" >
 				<uni-row   >
 					<uni-col :span="12" style="text-align: left;">
 						<view>
 							<text class="text" >支付方式</text>
 						</view>
 					</uni-col>
-					<uni-col :span="12" style="text-align: right; " >
+					<uni-col :span="12" style="text-align: right; color: black;font-weight: bold;" >
 						<text class="text"  >账期支付</text>
 					</uni-col>
 				</uni-row>	
-			</uni-card>
+			</uni-card> -->
 			
 			<uni-row>
 				<uni-col :span="12" style="text-align: left;">
@@ -120,7 +120,7 @@
 				</uni-col>
 			</uni-row>	
 			
-			<uni-row v-for="(item, index) in materialList" :key="index">
+			<uni-row v-for="(item, index) in materialInfo.entry" :key="index">
 				<cardv3 :baseFormData="item"></cardv3>
 			</uni-row>
 </view>
@@ -129,6 +129,10 @@
 
 <script>
 	import cardv3 from '../../common/cardv3/index.vue'
+	import {
+		queryApplyGood
+	} from '@/api/system/bill.js'
+	
 	export default {
 			 components: {
 				    // 注册组件
@@ -137,7 +141,10 @@
 		data() {
 			return {
 				billNumber: '',
-				materialListSize: 5,
+				materialListSize: 0,
+				materialInfo:{
+					createDate: ""
+				},
 				materialList: [
 					{orderWarehouse:"测试1",remark:"备注1",number:100,unit:"个"},
 					{orderWarehouse:"测试2",remark:"备注2",number:300,unit:"只"},
@@ -150,8 +157,12 @@
 		  onLoad(query) {
 		    // 获取传递的参数
 		    this.billNumber = this.$route.query.billNumber;
+			queryApplyGood(this.billNumber).then(res=>{
+				this.materialInfo = res.result;
+				this.materialListSize = this.materialInfo.entry.length
+				    console.log(this.billNumber, res);
+			})
 		
-		    console.log(this.billNumber);
 		  },
 		methods: {
 			gotoFilter(){

@@ -2,18 +2,19 @@
   <uni-search-bar
       class="w-600 text-left search-bar flex-1"
       bgColor="rgba(0,0,0,0.04)"
-      @confirm="searchHandle"
       :placeholder="placeholder"
       v-model="searchText"
-      cancelText="取消"
-      @blur="blurHandle"
-      @input="inputHandle"
-      @cancel="cancelHandle"
-      @clear="clearHandle"
+      clearButton="auto"
+	  cancelButton="none"
+      :readonly="readonly"
+	  @focus="focusHandle"
+      @confirm="searchHandle"
+	  @input="inputHandle"
   />
 </template>
 
 <script>
+
 export default {
   props:{
     cancelText:{
@@ -24,7 +25,11 @@ export default {
     placeholder:{
       type:String,
       default:'输入关键词搜索'
-    }
+    },
+	readonly:{
+	  type:Boolean,
+	  default: false
+	}
   },
   watch:{
     value:{
@@ -40,10 +45,9 @@ export default {
     }
   },
   methods:{
-     inputHandle(){
-
-          this.$emit('input',this.searchText)
-          this.$emit('search',this.searchText)
+     inputHandle(e){
+          this.$emit('input',e)
+          // this.$emit('search',this.searchText)
      },
     clearHandle(){
       this.searchText = ''
@@ -61,6 +65,9 @@ export default {
     },
     blurHandle(){
         this.$emit('blur',this.searchText)
+    },
+    focusHandle(){
+        this.$emit('focus',this.searchText)
     }
 
   }

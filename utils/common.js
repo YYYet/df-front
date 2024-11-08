@@ -52,3 +52,31 @@ export function tansParams(params) {
   }
   return result
 }
+
+
+export function formatBillStatus(status) {
+		const map = [
+					[
+						()=> status=='A' || status=='D' ||status=='Z' || status=='B',
+						()=> "暂存"
+					],
+					[
+						()=> status=='C',
+						()=> "已提交"
+					],
+				]
+		const target = map.find((m)=>m[0]());
+		if(target){
+			return target[1]();
+		}else{
+			return "未知类型";
+		}		
+}
+
+
+export function  formatDateV2(value){
+			if (value) {
+			  const date = new Date(value);
+			  return `${date.getMonth() + 1}/${date.getDate()}`;
+			}
+	  }

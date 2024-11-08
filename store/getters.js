@@ -5,6 +5,7 @@ const getters = {
   name: state => state.user.name,
   roles: state => state.user.roles,
   defaultTabName: state => state.tab.defaultTabName,
+  cacheMap: state => state.data.cacheMap,
   permissions: state => state.user.permissions
 }
 export default getters

@@ -3,6 +3,7 @@ module.exports = {
   // baseUrl: 'https://vue.ruoyi.vip/prod-api',
   // baseUrl: 'http://192.168.114.180:28080',
   baseUrl: 'http://localhost:28080',
+  // baseUrl: 'http://103.85.85.48:30174',
   // 应用信息
   appInfo: {
     // 应用名称

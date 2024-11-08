@@ -57,7 +57,9 @@ function queryTabsList(data) {
 function _queryTabsList(data, listCount){
 	var l = [];
 	for (var i = 0; i < listCount; i++) {
-		l[i] = {"name": '测试'+i, "id":i};
+		let randomNum = Math.random();
+		let uniqueId = Math.floor(randomNum * 1000000000).toFixed(0);
+		l[i] = {"name": '测试'+i, "id":parseInt(uniqueId.padStart(10, '0')) };
 	}
 	return _callQueryResult(l);
 	
@@ -80,7 +82,7 @@ function _queryMaterialList(data, listCount){
 				"goods":data.tabName+""+i,"nums":0,"id": uniqueId.padStart(10, '0'),
 				"unit": Math.floor(Math.random()*100) >= 50 ? "个" : "副","description":"描述"+i,
 				"storageInTransitNums":0,
-				"storageNums":0,"model":"x/y/z","step":Math.floor(Math.random()*10)+1};
+				"storageNums":0,"model":"x/y/z","step":Math.floor(Math.random()*10)+1,"tabIndex":data.tabIndex};
 			}
 				return _callQueryResult(l);
 }

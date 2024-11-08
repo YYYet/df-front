@@ -2,7 +2,7 @@
 	<view class="card-with-stripe">
 					<uni-card :is-shadow="false" class="card-content">
 						<uni-row>
-							<text class="text"  style="text-align: left; text-align: center;color: black;font-weight: bolder;font-size: 34rpx;">山爸爸大号外卖袋</text>
+							<text class="text"  style="text-align: left; text-align: center;color: black;font-weight: bolder;font-size: 34rpx;" v-text="baseFormData.materialName"></text>
 						</uni-row>	
 						<uni-row>
 							<uni-forms >
@@ -17,7 +17,8 @@
 									</uni-col>
 									<uni-col :span="4" >
 										<uni-forms-item class="item" style="text-align: right;"  err-show-type="none" >
-												<text class="text" style="font-size: 30rpx;font-weight: bold;color: #000;"  v-text="baseFormData.number"></text><text class="text"  v-text="baseFormData.unit"></text>
+												<text class="text" style="font-size: 30rpx;font-weight: bold;color: #000;"  v-text="baseFormData.qty"></text>
+												<text class="text"  v-text="baseFormData.unitName"></text>
 										</uni-forms-item>
 												
 									</uni-col>

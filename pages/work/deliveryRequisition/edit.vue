@@ -8,21 +8,22 @@
 					<uni-data-checkbox v-model="baseData.orderModel" :localdata="orderModelList" @change="change"></uni-data-checkbox>
 				</uni-forms-item>
 				<uni-forms-item label="申请模板"   label-width="auto" class="item" v-show="showApplicationTemplate">
-					<uni-list-item showArrow  clickable  @tap="pickerShow('申请模板')" :border="false" :right-text="baseData.applicationTemplate"/>
+					<uni-list-item showArrow  clickable  @tap="pickerShow('申请模板')" :border="false" :right-text="baseData.applicationTemplate.templateName"/>
 				</uni-forms-item>
 				<uni-forms-item label="预计到货时间" label-width="auto" class="item">
-						<uni-datetime-picker type="date"  :border="false" v-model="baseData.estimatedTimeOfArrival"/>	
+						<uni-datetime-picker type="date"  :border="false" v-model="baseData.applicationTemplate.arrivalDate"/>	
 				</uni-forms-item>
-				<uni-forms-item label="订货仓库" label-width="auto" class="item">
+		<!-- 		<uni-forms-item label="订货仓库" label-width="auto" class="item">
 					<uni-list-item showArrow  clickable  @tap="pickerShow('订货仓库')" :border="false" :right-text="baseData.orderWarehouse"/>
 				</uni-forms-item>
 				<uni-forms-item label="配送中心" label-width="auto" class="item">
 						<uni-list-item showArrow  clickable  @tap="pickerShow('配送中心')" :border="false" :right-text="baseData.distributionCenter"/>
-				</uni-forms-item>
+				</uni-forms-item> -->
 				<uni-forms-item label="经办人" label-width="auto" class="item">
-					<uni-list-item showArrow  clickable  @tap="pickerShow('经办人')" :border="false" :right-text="baseData.agent"/>
+					<!-- <uni-list-item showArrow  clickable  @tap="pickerShow('经办人')" :border="false" :right-text="baseData.applicationTemplate.agent"/> -->
+						<uni-list-item showArrow  clickable  :border="false" :right-text="baseData.applicationTemplate.agent"/>
 				</uni-forms-item>
-				<uni-forms-item label="配送方式名称" label-width="auto" class="item">
+	<!-- 			<uni-forms-item label="配送方式名称" label-width="auto" class="item">
 					<uni-list-item showArrow  clickable  @tap="pickerShow('配送方式名称')" :border="false" :right-text="baseData.deliveryMethodName"/>
 				</uni-forms-item>
 				<uni-forms-item label="联系地址" label-width="80px" class="item">
@@ -34,7 +35,7 @@
 				<uni-forms-item label="联系电话" label-width="80px" class="item">
 					<uni-easyinput :inputBorder="false" class="list-item-input" v-model="baseData.phone" placeholder="请输入联系电话"></uni-easyinput>
 				</uni-forms-item>
-				<uni-forms-item label="单据图片" label-width="auto" class="item"></uni-forms-item>
+				<uni-forms-item label="单据图片" label-width="auto" class="item"></uni-forms-item> -->
 				<uni-forms-item label="备注" label-width="auto" class="item-remark">
 					<uni-easyinput type="textarea"  v-model="baseData.remark" placeholder="请输入内容"></uni-easyinput>
 				</uni-forms-item>
@@ -48,15 +49,23 @@
 <script>
 	import { getDeliveryApplicationTemplateInformationByUserOrg, getOrderWarehouseByUserOrg, 
 	getDistributionCenterByUserOrg, getAgentByUserOrg, getDeliveryMethodNameByUserOrg } from '@/api/system/user.js'
+	import { queryTemplate } from '@/api/system/bill.js'
+		import { getMaterialTabs } from '@/api/system/material.js'
 	export default {
 		data() {
 			return {
 				curPick: "",
 				showApplicationTemplate:true,
 				tempApplicationTemplate:"",
+				columnIdIndexCache:{},
+				applicationTemplateList: [],
 				baseData:{
 					// 申请模板
-					applicationTemplate: "",
+					applicationTemplate: {
+						templateName: "",
+						arrivalDate: "",
+						agent: ""
+					},
 					orderModel: 0,
 					// 预计到货时间
 					estimatedTimeOfArrival: "",
@@ -86,7 +95,55 @@
 				curIndexs: [0]
 			}
 		},
+		onShow() {
+		
+			queryTemplate().then(response => {
+				var list = response.result;
+				console.log("list", list)
+				if(list.length != 0 ){
+					this.initApplication(list[0])
+				}else{
+					this.$modal.msg("无匹配的模板")
+				}
+				console.log("this.baseData", this.baseData)
+				// this.columns[0] = list.map(item => {
+				// 	return {
+				// 			label: item.name,
+				// 			value: item.number
+				// 	}
+				// });
+			
+			})	
+		},
 		methods: {
+			    initApplication(item){
+					this.baseData.applicationTemplate.templateName = item.name;
+					this.baseData.applicationTemplate.arrivalDate = item.arrivalDate;
+					this.baseData.applicationTemplate.agent = item.auditor;
+					uni.setStorageSync("applicationTemplate", item)
+				},
+				getData() {
+						
+							getMaterialTabs().then(res => {
+								console.log("edit queryTabsList", res)
+								let columns = res.result
+								// this.$store.commit("SET_TAB_LIST", this.columns)
+								 // this.$store.dispatch('SetTabList',this.columns)
+								uni.setStorageSync('columns', columns);
+								uni.setStorageSync('defaultTabName', columns[0].name);
+								console.log("edit this.columns", columns)
+								for (var i = 0; i < columns.length; i++) {
+									this.columnIdIndexCache[columns[i].id] = i;
+								}
+								uni.setStorageSync("columnIdIndexCache", this.columnIdIndexCache)
+								console.log("edit this.columnIdIndexCache", this.columnIdIndexCache)
+								
+								this.$store.dispatch('SetColumnIdIndexCacheMap', this.columnIdIndexCache)
+								this.$tab.navigateTo('/pages/work/itemAddition/index')
+							}).catch(res => {
+								console.log(" edit queryTabsList", res)
+							})
+						},
 			change(e){
 				console.log("e",e)
 				if(e.detail.data.value == 1){
@@ -100,7 +157,8 @@
 				}
 			},
 			gotoCartShop(){
-				this.$tab.navigateTo('/pages/common/shop-cart/index')
+				this.getData()
+				
 			},
 			    openDateTimePicker() {
 			      this.$refs.datetimePicker.show(); // 调用uni-datetime-picker的show方法
@@ -112,25 +170,30 @@
 				console.log("flag",flag)
 				this.curPick = flag;
 				if(flag == '申请模板'){
-					getDeliveryApplicationTemplateInformationByUserOrg().then(response => {
-						var result = response.result;
+				queryTemplate().then(response => {
+					var result = response.result;
+					if(result.length  == 0){
+						this.$modal.msg("无匹配的模板")
+					}else{
 						this.columns[0] = result.map(item => {
-							return {
-								label: item.templateName,
-								value: item.templateNumber
-							}
-						});
+								return {
+									label: item.name,
+									value: item
+								}
+							});
 						this.$refs.ChPicker.show()
-					})
+					}
 				
+				})	
+					
 				}
 				if(flag == '订货仓库'){
 					getOrderWarehouseByUserOrg().then(response => {
 						var result = response.result;
 						this.columns[0] = result.map(item => {
 							return {
-								label: item.templateName,
-								value: item.templateNumber
+								label: item.name,
+								value: item.number
 							}
 						});
 						this.$refs.ChPicker.show()
@@ -179,11 +242,12 @@
 			// 	this.curIndexs = e.indexs
 			// },
 			clickChange(e){
-				console.log(e);
+				console.log("clickChange",e);
 				var flag = this.curPick;
 				if(flag == '申请模板'){
-					this.baseData.applicationTemplate = e.columns[0].label;
-					this.tempApplicationTemplate = this.baseData.applicationTemplate;
+					// this.baseData.applicationTemplate = e.columns[0].label;
+					// this.tempApplicationTemplate = this.baseData.applicationTemplate;
+						this.initApplication(e.columns[0].value)
 				}
 				if(flag == '订货仓库'){
 				    this.baseData.orderWarehouse = e.columns[0].label;
