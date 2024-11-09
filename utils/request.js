@@ -22,6 +22,10 @@ const request = config => {
     config.url = url
   }
   return new Promise((resolve, reject) => {
+	  // uni.showLoading({
+	  //   title: "加载中",
+	  //   icon: 'none'
+	  // })
     uni.request({
         method: config.method || 'get',
         timeout: config.timeout ||  timeout,
@@ -31,6 +35,7 @@ const request = config => {
 		enableCookie: true,
         dataType: 'json'
       }).then(response => {
+		 // uni.hideLoading()
         let [error, res] = response
         if (error) {
           toast('后端接口连接异常')
@@ -73,6 +78,7 @@ const request = config => {
         resolve(res.data)
       })
       .catch(error => {
+			 // uni.hideLoading()
         let { message } = error
         if (message === 'Network Error') {
           message = '后端接口连接异常'

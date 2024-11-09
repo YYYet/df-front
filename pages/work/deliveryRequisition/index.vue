@@ -278,8 +278,10 @@
 					// this.content = this.buildFabMenu(this.tabIndex)
 				}
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+			
 				this.$nextTick(()=>{
 						this.$refs.paging.reload();
+						
 				})
 			},
 			virtualTopHeightChange(topHeight) {
@@ -294,18 +296,20 @@
 					pageSize: pageSize,
 					random: this.tabIndex === 1
 				}
-
+			
 				getApplyGood(this.tabList[this.tabIndex], pageNo, pageSize).then(res => {
 					let list = res.result.data;
 					this.total = res.result.total;
 					console.log("list", res)
 					this.$refs.paging.complete(list);
+					this.$modal.closeLoading()
 				}).catch(res => {
 					// 如果请求失败写this.$refs.paging.complete(false);
 					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
 					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					console.log("res", res)
 					this.$refs.paging.complete(false);
+					
 				})
 
 				// this.$request2.queryListLong(params).then(res => {
