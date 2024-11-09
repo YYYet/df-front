@@ -158,9 +158,10 @@
 					  mask: true // 显示透明蒙层防止触摸穿透
 					});
 					auditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
-						this.$refs.paging.refresh()
-						this.$modal.toast("提交成功")
+						
+						this.$modal.msgSuccess("提交成功")
 						uni.hideLoading()
+						this.$refs.paging.refresh()
 					});
 				}
 				if(op == "unAudit"){
@@ -169,9 +170,10 @@
 					  mask: true // 显示透明蒙层防止触摸穿透
 					});
 					unAuditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
-						this.$refs.paging.refresh()
-						this.$modal.toast("撤销成功")
+					
+						this.$modal.msgSuccess("撤销成功")
 						uni.hideLoading()
+							this.$refs.paging.refresh()
 					});
 				}
 				this.radioCache = {};
