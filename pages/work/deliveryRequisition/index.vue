@@ -153,13 +153,25 @@
 					return;
 				}
 				if(op == "audit"){
+					uni.showLoading({
+					  title: '提交中，请稍后', // 提示信息
+					  mask: true // 显示透明蒙层防止触摸穿透
+					});
 					auditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
 						this.$refs.paging.refresh()
+						this.$modal.toast("提交成功")
+						uni.hideLoading()
 					});
 				}
 				if(op == "unAudit"){
+					uni.showLoading({
+					  title: '撤销中，请稍后', // 提示信息
+					  mask: true // 显示透明蒙层防止触摸穿透
+					});
 					unAuditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
 						this.$refs.paging.refresh()
+						this.$modal.toast("撤销成功")
+						uni.hideLoading()
 					});
 				}
 				this.radioCache = {};
