@@ -1,18 +1,72 @@
 <template>
 	<view>
 		<z-paging-swiper :fixed="false">
+			<!-- 		<view slot="top">
+				<z-tabs :tabs-style="{'background-color':'#f1f1f1'}" :active-color="'#000000'" :list="columns"
+					:current="parentTabIndex" @change="parentTabChange" :scroll-count="0" />
+			</view> -->
 			<view slot="left">
-				<view class="side-a">
+				<!-- <view class="side-a"> -->
+				<view>
+
 					<scroll-view :scroll-y="true" :scroll-top="scrollTop" :scroll-with-animation="true"
-						style="height: 900rpx;">
-						<view class="item text-ellipsis__2 side-item" v-for="(item,index) in columns" :key="index"
+						:style="{'height': tabVisibleHeight+ 'px'}">
+						<!-- accordion -->
+						<!-- :show-arrow="item.children != undefined"  -->
+						<uni-collapse ref="collapse" class="custom-collapse-bg" v-model="activeNames"
+							@change="handleCollapseChange">
+							<uni-collapse-item :title="item.name" v-for="(item,index) in treeColumns" :key="index"
+								:open="false" title-border="show" :border="false">
+								<uni-list v-show="item.children">
+									<uni-list-item clickable class="text-ellipsis__2" @click="activeItem(item)"
+										badge-positon="left" :badge-text="11+''">
+										<template v-slot:footer>
+											<uni-badge class="uni-badge-left-margin"
+												:text="tabBadgeCache[findArrIndexById(treeColumns[index])]"
+												absolute="rightTop" :offset="[-3, -3]" size="small">
+												<text class="text-ellipsis__2">{{treeColumns[index].name}}</text>
+											</uni-badge>
+										</template>
+									</uni-list-item>
+
+
+									<uni-list-item clickable v-for="(subItem,subIndex) in item.children" :key="subIndex"
+										class="text-ellipsis__2" @click="activeItem(subItem)">
+										<template v-slot:footer>
+											<uni-badge class="uni-badge-left-margin"
+												:text="tabBadgeCache[findArrIndexById(subItem)]" absolute="rightTop"
+												:offset="[-3, -3]" size="small">
+												<text class="text-ellipsis__2">{{subItem.name}}</text>
+											</uni-badge>
+										</template>
+									</uni-list-item>
+								</uni-list>
+								<uni-list v-show="!item.children">
+									<view>
+										<uni-list-item clickable class="text-ellipsis__2" @click="activeItem(item)">
+											<template v-slot:footer>
+												<uni-badge class="uni-badge-left-margin"
+													:text="tabBadgeCache[findArrIndexById(treeColumns[index])]"
+													absolute="rightTop" :offset="[-3, -3]" size="small">
+													<text class="text-ellipsis__2">{{treeColumns[index].name}}</text>
+												</uni-badge>
+											</template>
+										</uni-list-item>
+									</view>
+								</uni-list>
+							</uni-collapse-item>
+						</uni-collapse>
+
+						<!-- 			<view class="item text-ellipsis__2 side-item" v-for="(item,index) in columns" :key="index"
 							@click="handleSideAction(item,index)" :class="[index===sideCurrentIndex&&'type_active']">
 							<uni-badge class="uni-badge-left-margin" :text="tabBadgeCache[index]" absolute="rightTop"
 								:offset="[-3, -3]" size="small">
-								<view class="box"><text class="text-ellipsis__2">{{item.name}}</text></view>
+								<view class="box">
+									<text class="text-ellipsis__2">{{item.name}}</text>
+								</view>
 							</uni-badge>
-							<!-- <view class="badge" v-if="item.goodNum">{{ item.goodNum }}</view> -->
-						</view>
+						</view> -->
+
 					</scroll-view>
 				</view>
 			</view>
@@ -20,7 +74,7 @@
 			<swiper class="side-b" :current="sideCurrentIndex" @transition="swiperTransition"
 				@animationfinish="swiperAnimationfinish">
 				<swiper-item class="swiper-item" v-for="(item, index) in columns" :key="index">
-					<cartshop-swiper-item ref="listItem" :tabIndex="index" :currentTab="columns[index]"
+					<cartshop-swiper-item ref="listItem" :tabIndex="index" :currentTab="item"
 						:currentIndex="sideCurrentIndex" @numberComputed="numberComputed"
 						:needNumberSelector="true"></cartshop-swiper-item>
 				</swiper-item>
@@ -32,9 +86,9 @@
 
 <script>
 	import cartshopSwiperItem from '@/pages/common/cartshop/cartshop-swiper-item/index.vue'
-
 	import {
 		getMaterialTabs,
+		getMaterialTabsByGroupId,
 		getMaterialAddedV2
 	} from '@/api/system/material.js'
 
@@ -54,6 +108,10 @@
 			defaultTab: {
 				type: String
 			},
+			tabVisibleHeight: {
+				type: Number,
+				default: 900
+			},
 			// 点击侧边栏 右边是否需要动画
 			scrollWithAnimation: {
 				type: Boolean,
@@ -63,8 +121,13 @@
 		data() {
 			return {
 				columns: [],
+				treeColumns: [],
+				childrenColumns: [],
 				tabList: ['测试1', '测试2', '测试3', '测试4'],
+				parentTabList: ['测试1', '测试2', '测试3', '测试4'],
 				current: 0,
+				activeNames: "",
+				parentTabIndex: 0,
 				test: 0,
 				tabIndex: 0,
 				topHeight: 0,
@@ -101,6 +164,12 @@
 				},
 				deep: true
 			},
+			parentTabIndex: {
+				handler(newVal) {
+					console.log("父tab变化", newVal);
+				},
+				deep: true
+			},
 		},
 		created() {
 
@@ -134,6 +203,9 @@
 			uni.setStorageSync('sideCurrentIndex', 0);
 			console.log("columns", uni.getStorageSync('columns'))
 			this.columns = uni.getStorageSync('columns');
+
+
+			this.treeColumns = uni.getStorageSync('treeColumns');
 			console.log("localColumns", this.columns)
 			for (var i = 0; i < this.columns.length; i++) {
 				// this.tabClickCache.push(false);
@@ -158,12 +230,55 @@
 		},
 
 		methods: {
-			clearCartShop(){
+			handleCollapseChange(arr) {
+				console.log("handleCollapseChange", arr)
+			},
+			findArrIndexById(item) {
 				for (var i = 0; i < this.columns.length; i++) {
-					// this.$set(this.tabBadgeCache, i, 0);
-					console.log("this.$refs.listItem[i]", this.$refs.listItem[i])
-					this.$refs.listItem[i].reload();
+					let c = this.columns[i];
+					if (c.id == item.id) {
+						return i;
+					}
 				}
+			},
+			activeItem(item) {
+				// console.log("activeNames", item)
+				console.log("点击左侧tab==>", item)
+
+				this.handleSideClick = true
+				this.sideCurrentIndex = this.findArrIndexById(item);
+				this.tabName = item.name
+				uni.setStorageSync('defaultTabName', item.name);
+				uni.setStorageSync('sideCurrentIndex', this.sideCurrentIndex);
+			},
+			parentTabChange(index) {
+				this.parentTabIndex = index;
+				// console.log("parentTabChange this.columns", this.columns)
+				// console.log("parentTabChange this.columns child", this.columns[index].children)
+				// this.childrenColumns = this.columns[index].children;
+				// if(this.childrenColumns == undefined){
+				// 	var c = this.columns[index];
+				// 	let item = {
+				// 		id: c.id,
+				// 		name: "全部",
+				// 		parentId: "0",
+				// 		weight: "0"
+				// 	}
+				// 	this.childrenColumns = [];
+				// 	this.childrenColumns[0] = item
+				// }
+			},
+			clearCartShop() {
+				this.$nextTick(() => {
+					for (var i = 0; i < this.columns.length; i++) {
+						// this.$set(this.tabBadgeCache, i, 0);
+						// console.log("当前", this.$refs.listItem[i])
+						if (this.$refs.listItem[i] == undefined) {
+							continue;
+						}
+						this.$refs.listItem[i].reload();
+					}
+				})
 			},
 			refeshTabBadge(arr) {
 				console.log("arr", arr)
@@ -171,11 +286,11 @@
 					for (var i = 0; i < this.columns.length; i++) {
 						this.$set(this.tabBadgeCache, i, 0);
 					}
-				}else{
+				} else {
 					for (var i = 0; i < arr.length; i++) {
 						let item = arr[i]
 						let currentTabIndex = this.getTabIndexFromColumnIdIndexCache(item.groupId);
-						// console.log("currentTabIndex", currentTabIndex)
+						console.log("currentTabIndex", currentTabIndex)
 						item.currentTabIndex = currentTabIndex;
 						this.numsCacheList[item.currentTabIndex][item.id] = item.nums
 						let goodsNum = 0;
@@ -255,6 +370,10 @@
 				})
 			},
 
+			handleSubAction(subItem, parentIndex, subIndex) {
+				// 处理子菜单项的点击事件
+				// 可以在这里添加其他处理逻辑，比如更新sideCurrentIndex等
+			},
 			handleSideAction(item, index) {
 				console.log("点击左侧tab==>", item, index)
 
@@ -298,6 +417,40 @@
 
 
 <style lang="scss" scoped>
+	/deep/ .uni-collapse-item__title-box {
+		background-color: #f1f1f1;
+	}
+
+	// /deep/ .uni-collapse-item{
+	// 	height: 50px;
+	// }
+
+	/* 折叠面板头部未展开状态样式 */
+	/deep/ .uni-collapse .uni-collapse-item__wrap.uni-collapse-item--disabled {
+		background-color: #f0f0f0;
+		/* 设置折叠面板未展开时的背景色 */
+	}
+
+	/* 折叠面板头部展开状态样式 */
+	/deep/ .uni-collapse .uni-collapse-item__content {
+		background-color: #e0e0e0;
+		/* 设置折叠面板展开时的背景色 */
+	}
+
+	.custom-collapse-bg {
+		background-color: #f1f1f1 !important;
+	}
+
+	.submenu {
+		margin-left: 20px;
+		/* 根据需要调整子菜单的缩进 */
+	}
+
+	.submenu-item {
+		cursor: pointer;
+		/* 根据需要添加更多的样式 */
+	}
+
 	.swiper {
 		width: 50%;
 		height: 100%;
@@ -384,5 +537,23 @@
 		text-overflow: ellipsis;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+		font-size: 10px;
+		background-color: #f1f1f1;
+	}
+
+	.text-ellipsis__2-active {
+		display: -webkit-box;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		font-size: 10px;
+		background-color: white;
+	}
+
+	.text-active {
+		background: white;
+		font-weight: 600;
+		color: #000000;
 	}
 </style>

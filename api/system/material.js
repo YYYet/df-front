@@ -14,6 +14,7 @@ export function getMaterialTabsByGroupId(groupId) {
     method: 'get'
   })
 }
+
 export function getMaterialByTab(groupId, page, pageSize) {
   return request({
     url: '/system/material/getMaterialByTabV2?groupId='+groupId+"&page="+page+"&pageSize="+pageSize,
@@ -29,12 +30,14 @@ export function getMaterialByTabV3(groupId, billNo, page, pageSize) {
 }
 
 export function getMaterialByName(name, page, pageSize) {
-	
   return request({
     url: '/system/material/getMaterialByNameV2?name='+name+"&page="+page+"&pageSize="+pageSize,
     method: 'get'
   })
 }
+
+
+
 export function getMaterialByNameV2(name, billNo, page, pageSize) {
 	
   return request({

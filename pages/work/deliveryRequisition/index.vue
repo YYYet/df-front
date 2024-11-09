@@ -22,9 +22,9 @@
 
 			</template>
 			<uni-fab ref="fab" :horizontal="horizontal" :vertical="vertical" @fabClick="fabClick" style="bottom: 100px;" />
-			<!-- 		<template #bottom>
+					<template #bottom>
 				<uni-row class="demo-uni-row">
-					<uni-col :span="12" v-show="false">
+			<!-- 		<uni-col :span="12" v-show="false">
 						<view class="demo-uni-col light">
 							<button type="default">废弃</button>
 						</view>
@@ -32,15 +32,20 @@
 					<uni-col :span="12">
 						<view class="demo-uni-col light">
 							<button type="default">合并</button>
+						</view></uni-col> -->
+					
+					<uni-col :span="24" v-show="tabIndex===1 && ( Object.keys(radioCache).length != 0)">
+						<view class="demo-uni-col light">
+							<button type="primary" @click="billOp('audit')">提交</button>
 						</view>
 					</uni-col>
-					<uni-col :span="12">
+					<uni-col :span="24" v-show="tabIndex===2 && (Object.keys(radioCache).length != 0)">
 						<view class="demo-uni-col light">
-							<button type="primary">审核</button>
+							<button type="default" @click="billOp('unAudit')">撤销</button>
 						</view>
 					</uni-col>
 				</uni-row>
-			</template> -->
+			</template>
 		</z-paging>
 
 		<!-- 普通弹窗 -->
@@ -52,32 +57,32 @@
 				</template>
 			</uni-section>
 			<uni-forms>
-				<view class="popup-content">
+	<!-- 			<view class="popup-content">
 					<uni-forms-item label="仓库" name="name">
 						<uni-data-select :localdata="ckdemo" :clear="ckclear"></uni-data-select>
 					</uni-forms-item>
-				</view>
+				</view> -->
 				<view class="popup-content">
-					<uni-forms-item label="货品" name="age">
-						<uni-easyinput type="text" placeholder="货品名称/首字母/编码" />
+					<uni-forms-item label="货品" name="material">
+						<uni-easyinput type="text" placeholder="货品名称/首字母/编码" v-model="billQueryObj.material" />
 					</uni-forms-item>
 				</view>
 
 				<view class="popup-content">
-					<uni-forms-item label="单号" name="age">
-						<uni-easyinput type="text" placeholder="请输入单号" />
+					<uni-forms-item label="单号" name="billNumber">
+						<uni-easyinput type="text" placeholder="请输入单号" v-model="billQueryObj.billNumber" />
 					</uni-forms-item>
 				</view>
 			</uni-forms>
 			<uni-row class="demo-uni-row">
 				<uni-col :span="12">
 					<view class="demo-uni-col light">
-						<button type="default">重置</button>
+						<button type="default" @click="queryBtnClick(false)">重置</button>
 					</view>
 				</uni-col>
 				<uni-col :span="12">
 					<view class="demo-uni-col light">
-						<button type="primary">查询</button>
+						<button type="primary" @click="queryBtnClick(true)">查询</button>
 					</view>
 				</uni-col>
 			</uni-row>
@@ -90,7 +95,7 @@
 <script>
 	import cardv2 from '../../common/cardv2/index.vue'
 	import {
-		getApplyGood
+		getApplyGood,getApplyGoodByCondition,unAuditApplyGoodBill,auditApplyGoodBill
 	} from '@/api/system/bill.js'
 
 	export default {
@@ -102,44 +107,13 @@
 			return {
 				// , '已分单', '已汇总', '状态1', '状态2', '状态3'
 				tabList: ['全部', '暂存', '已提交'],
+				billQueryObj: {
+					material: "",
+					billNumber:""
+				},
 				tabIndex: 0,
 				total: 0,
 				topHeight: 0,
-				content: [{
-						// iconPath: '/static/add.png',
-						// selectedIconPath: '/static/add.png',
-						text: '添加',
-						active: false
-					},
-					{
-						// iconPath: '/static/add.png',
-						// selectedIconPath: '/static/add.png',
-						text: '提交',
-						active: false
-					},
-					{
-						// iconPath: '/static/add.png',
-						// selectedIconPath: '/static/add.png',
-						text: '审核',
-						active: false
-					},
-					{
-						// iconPath: '/static/add.png',
-						// selectedIconPath: '/static/add.png',
-						text: '反审核',
-						active: false
-					}
-				],
-				testCardV1Data: {
-					billNumber: 'DH11122233',
-					extra: "货品订货-特殊请购\n\r (7:00-22:00)",
-					arrivalDate: "10/16",
-					arrivalTime: "0:00",
-					agent: '18888888888',
-					distributionCenter: '配送中心',
-					orderWarehouse: "山爸爸德清店",
-					status: "已处理"
-				},
 				title: 'uni-fab',
 				directionStr: '垂直',
 				horizontal: 'right',
@@ -173,6 +147,68 @@
 			});	
 		},
 		methods: {
+			billOp(op){
+				console.log("当前页面选中的单据", this.radioCache)
+				if(this.radioCache == null || Object.keys(this.radioCache).length === 0){
+					return;
+				}
+				if(op == "audit"){
+					auditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
+						this.$refs.paging.refresh()
+					});
+				}
+				if(op == "unAudit"){
+					unAuditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
+						this.$refs.paging.refresh()
+					});
+				}
+				this.radioCache = {};
+			},
+			queryBtnClick(isQuery){
+				if(isQuery){
+					let condition = ""
+					
+					if(this.billQueryObj.material == "" && this.billQueryObj.billNumber != ""){
+						condition = "FBillNo like '%"+this.billQueryObj.billNumber +"%'";
+					}
+					if(this.billQueryObj.material != "" && this.billQueryObj.billNumber == ""){
+								const reg = /^[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]+$/;
+						console.log("this.isChinese(this.billQueryObj.material)", reg.test(this.billQueryObj.material), this.billQueryObj.material)
+				
+						
+						if(reg.test(this.billQueryObj.material)){
+							condition = "FMaterialName like '%"+this.billQueryObj.material+"%' ";
+						}else{
+							condition = "FMaterialId like '%"+this.billQueryObj.material+"%' ";
+						}
+					}
+					// if(this.billQueryObj.material != "" && this.billQueryObj.billNumber != ""){
+					// 	condition = "(FMaterialName like '%"+this.billQueryObj.material+"%' or FMaterialId '%"+this.billQueryObj.material+"%') and  (FBillNo like '%"+this.billQueryObj.billNumber +"%')";
+					// }
+					// 	TODO: 需要做sql联查分录
+					
+					
+					getApplyGoodByCondition(condition,this.tabList[this.tabIndex], 1, 99999).then(res => {
+						let list = res.result.data;
+						this.total = res.result.total;
+						console.log("list", res)
+						this.$refs.paging.complete(list);
+					}).catch(res => {
+						// 如果请求失败写this.$refs.paging.complete(false);
+						// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+						// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+						console.log("res", res)
+						this.$refs.paging.complete(false);
+					})
+					
+						this.$refs.popup.close()
+				}
+				if(!isQuery){
+					this.billQueryObj.material = "";
+					this.billQueryObj.billNumber = "";
+					
+				}
+			},
 			trigger(e) {
 				console.log(e)
 				this.content[e.index].active = !e.item.active
@@ -205,85 +241,32 @@
 				console.log("radioCache", item, this.radioCache)
 			},
 			toggle(type) {
-				this.type = type
-				this.title = "sadasd"
-				this.showClose = true
 				this.$refs.popup.open()
 			},
 			closePopup() {
 				this.$refs.popup.close()
 			},
 			onNavigationBarButtonTap(e) {
-				console.log('测试', e)
+				console.log('高级查询', e)
 				if (e.index == 0) {
-					uni.showToast({
-						title: '点击了高级查询按钮',
-						icon: 'none'
-					})
+				
 					this.toggle('bottom');
 				}
 			},
 			fabClick() {
-				uni.showToast({
-					title: '点击了悬浮按钮',
-					icon: 'none'
-				})
+			
 				this.$tab.navigateTo('/pages/work/deliveryRequisition/edit')
 			},
-			buildFabMenu(tabIndex){
-				if(tabIndex == 1){
-						return [{
-											// iconPath: '/static/add.png',
-											// selectedIconPath: '/static/add.png',
-											text: '添加',
-											active: false
-										},
-										{
-											// iconPath: '/static/add.png',
-											// selectedIconPath: '/static/add.png',
-											text: '提交',
-											active: false
-										}
-									]
-				}
-				if(tabIndex == 2){
-						return [{
-											// iconPath: '/static/add.png',
-											// selectedIconPath: '/static/add.png',
-											text: '添加',
-											active: false
-										},
-											{
-											// iconPath: '/static/add.png',
-											// selectedIconPath: '/static/add.png',
-											text: '审核',
-											active: false
-										}
-									];
-				}
-				if(tabIndex == 3){
-						return [{
-											// iconPath: '/static/add.png',
-											// selectedIconPath: '/static/add.png',
-											text: '添加',
-											active: false
-										},
-											{
-											// iconPath: '/static/add.png',
-											// selectedIconPath: '/static/add.png',
-											text: '反审核',
-											active: false
-										}
-									];
-				}
-			},
+	
 			tabChange(index) {
 				this.tabIndex = index;
 				if(this.tabIndex == 1){
-					this.content = this.buildFabMenu(this.tabIndex)
+					// this.content = this.buildFabMenu(this.tabIndex)
 				}
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
+				this.$nextTick(()=>{
+						this.$refs.paging.reload();
+				})
 			},
 			virtualTopHeightChange(topHeight) {
 				this.topHeight = topHeight;
@@ -330,7 +313,7 @@
 </script>
 
 <style scoped>
-	/* 	/deep/.uni-fab__circle {
+/* 		/deep/.uni-fab__circle {
 		margin-bottom: 10%;
 	} */
 

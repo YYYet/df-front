@@ -1,19 +1,26 @@
+
 <script>
   import config from './config'
   import store from '@/store'
   import { getToken } from '@/utils/auth'
+	import pageAnimation from './components/page-animation'
 
   export default {
+		mixins: [pageAnimation],
+	
 	    data() {
 	      return {
-	        isPageVisible: true
+	        isPageVisible: true,
+			showLoadingForDom: false
 	      };
 	    },
     onLaunch: function() {
+
       this.initApp()
     },
-	
+
     methods: {
+		
 	  formatDateV2(value){
 			if (value) {
 			  const date = new Date(value);
@@ -53,6 +60,15 @@
   @import '@/static/scss/index.scss';
   @import '@/static/scss/animations.scss';
   @import '@/static/css/animate.min.css';
+  
+    .loading {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
   
 radio .wx-radio-input {
   width: 20px;

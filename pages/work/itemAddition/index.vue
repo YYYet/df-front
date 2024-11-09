@@ -14,7 +14,7 @@
 			</view>
 		</view>
 		<CartShop ref="CartShop" class="card-shop-wrap" @resetColumnsValue="resetColumnsValue"
-			@numberComputed="numberComputed" />
+			@numberComputed="numberComputed" :tabVisibleHeight="tabVisibleHeight"/>
 		<CartPay :goodsNum="goodsNum" :goodsTotalPrice="goodsTotalPrice" id="bottomInfo" @clickCart="clickCart"
 			@submit="submit" />
 	</view>
@@ -32,6 +32,9 @@
 	import {
 		saveApplyGood
 	} from '@/api/system/bill.js'
+	
+	import {calculateLayoutHeight} from "@/utils/common.js"
+	
 	export default {
 		components: {
 			// 注册组件
@@ -43,6 +46,7 @@
 			return {
 				columns: [],
 				cacheMap: {},
+				tabVisibleHeight: 0,
 				goodsTotalPrice: 0,
 				goodsNum: 0
 			}
@@ -50,11 +54,15 @@
 		onLoad() {
 			console.log("onLoad")
 		},
+	
 		onBackPress(e) {
 			if (e.from === 'backbutton') {
 				console.log("加购物品页面返回")
 				return false;
 			}
+		},
+		onUnload() {
+			uni.$off('notic2BottomRefresh');
 		},
 		created() {
 			console.log("itemAddition created")
@@ -71,19 +79,30 @@
 					}, 0);	
 				}
 			});
+			
+			
 		},
-		onShow() {
-			console.log("onShow fromPage and refeshTabBadgeByNet", this.$store.state.data.fromPage)
+	
 		
-			console.log("onshow uni.getStorageSync('tabBadgeCacheV2');", 	uni.getStorageSync('tabBadgeCacheV2'))
-			this.refeshTabBadgeAndBottomNumsByNet()
-		},
 		mounted() {
 
 		},
 		onReady() {
+
+	
+		},
+		onShow(){
+			this.$nextTick(()=>{
+				let d = this.calculateLayoutHeight("topInfo","bottomInfo");
+				this.tabVisibleHeight = d;
+				console.log("onShow tabVisibleHeight", d)
+				
+				console.log("onShow refeshTabBadgeByNet", this.$store.state.data.fromPage)
+				this.refeshTabBadgeAndBottomNumsByNet()
+			})
 		},
 		methods: {
+			calculateLayoutHeight,
 			refeshTabBadgeAndBottomNumsByNet() {
 				getMaterialAddedV2(1, 99999).then(res => {
 					let list = res.result;
@@ -113,9 +132,9 @@
 						uni.setStorageSync("materialDataAdded", list);
 						
 						let applicationTemplate = uni.getStorageSync("applicationTemplate")
-						
+						let applyListData = uni.getStorageSync("applyListData")
 						const data = {
-							note: "222",
+							note: applyListData.remark,
 							reviceOrgNumber: applicationTemplate.orgNumber,
 							applyOrgNumber: applicationTemplate.orgNumber,
 							applyDate: new Date(),
@@ -135,12 +154,15 @@
 									uni.$emit('selectTab', 1);	
 							
 									
-								}).catch(res=>{
+								}).catch(error=>{
 										uni.hideLoading();
 								})
 						
-							}).catch(res=>{
-								this.$modal.msg("提交失败"+res);
+							}).catch(error =>{
+								//    let { message } = error
+								// this.$modal.msg("提交失败");
+								// 		console.log("saveApplyGood error", error, message)
+								// this.$modal.confirm(message)
 								uni.hideLoading();
 							})
 					}).catch(res=>{
@@ -182,20 +204,20 @@
 			resetColumnsValue(columns) {
 				this.columns = columns;
 			},
-			getData() {
+			// getData() {
 
-				getMaterialTabs(0).then(res => {
-					console.log("queryTabsList", res)
-					this.columns = res.result
-					// this.$store.commit("SET_TAB_LIST", this.columns)
-					// this.$store.dispatch('SetTabList',this.columns)
-					uni.setStorageSync('columns', this.columns);
-					uni.setStorageSync('defaultTabName', this.columns[0].name);
-					console.log("this.columns", this.columns)
-				}).catch(res => {
-					console.log("queryTabsList", res)
-				})
-			},
+			// 	getMaterialTabs(0).then(res => {
+			// 		console.log("queryTabsList", res)
+			// 		this.columns = res.result
+			// 		// this.$store.commit("SET_TAB_LIST", this.columns)
+			// 		// this.$store.dispatch('SetTabList',this.columns)
+			// 		uni.setStorageSync('columns', this.columns);
+			// 		uni.setStorageSync('defaultTabName', this.columns[0].name);
+			// 		console.log("this.columns", this.columns)
+			// 	}).catch(res => {
+			// 		console.log("queryTabsList", res)
+			// 	})
+			// },
 			numberComputed(val, index, item) {
 				console.log("购物车最外层shopCart中的numberComputed被触发", item)
 

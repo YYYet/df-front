@@ -37,8 +37,11 @@ const request = config => {
           reject('后端接口连接异常')
           return
         }
+	
         const code = res.data.code || 200
-        const msg = errorCode[code] || res.data.msg || errorCode['default']
+        // const msg = errorCode[code]|| res.msg || res.data.msg || errorCode['default']
+		  const msg =  res.data.msg 
+		  	console.log("Promise response", response, res)
         if (code === 401) {
           showConfirm('登录状态已过期，您可以继续留在该页面，或者重新登录?').then(res => {
             if (res.confirm) {
@@ -49,7 +52,12 @@ const request = config => {
           })
           reject('无效的会话，或者会话已过期，请重新登录。')
         } else if (code === 500) {
-          toast(msg)
+          // toast(msg)
+		  showConfirm(msg).then(res => {
+		    if (res.confirm) {
+		
+		    }
+		  })
           reject('500')
         } else if (code === 408) {
 			showConfirm(msg).then(res => {

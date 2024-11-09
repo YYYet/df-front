@@ -5,7 +5,8 @@
 		<uni-card>
 			<uni-forms ref="form" border v-model="baseData">
 				<uni-forms-item label="订货模式" label-width="auto" class="item">
-					<uni-data-checkbox v-model="baseData.orderModel" :localdata="orderModelList" @change="change"></uni-data-checkbox>
+					<uni-list-item showArrow  clickable  :border="false" right-text="模板订货"/>
+					<!-- <uni-data-checkbox v-model="baseData.orderModel" :localdata="orderModelList" @change="change" style="text-align: right;"></uni-data-checkbox> -->
 				</uni-forms-item>
 				<uni-forms-item label="申请模板"   label-width="auto" class="item" v-show="showApplicationTemplate">
 					<uni-list-item showArrow  clickable  @tap="pickerShow('申请模板')" :border="false" :right-text="baseData.applicationTemplate.templateName"/>
@@ -50,7 +51,7 @@
 	import { getDeliveryApplicationTemplateInformationByUserOrg, getOrderWarehouseByUserOrg, 
 	getDistributionCenterByUserOrg, getAgentByUserOrg, getDeliveryMethodNameByUserOrg } from '@/api/system/user.js'
 	import { queryTemplate } from '@/api/system/bill.js'
-		import { getMaterialTabs } from '@/api/system/material.js'
+		import { getMaterialTabs,getMaterialTabsByGroupId } from '@/api/system/material.js'
 	export default {
 		data() {
 			return {
@@ -87,9 +88,6 @@
 				orderModelList: [{
 					text: '模板订货',
 					value: 0
-				}, {
-					text: '自定义订货',
-					value: 1
 				}],
 				columns: [],
 				curIndexs: [0]
@@ -124,24 +122,57 @@
 				},
 				getData() {
 						
+						// getMaterialTabsByGroupId(0).then(res=>{
+						// 		let parentColums = res.result
+						// 		uni.setStorageSync('parentColums', columns);
+						// })
+								uni.showLoading({
+								  title: '正在加载购物车', // 提示信息
+								  mask: true // 显示透明蒙层防止触摸穿透
+								});
 							getMaterialTabs().then(res => {
 								console.log("edit queryTabsList", res)
 								let columns = res.result
+								let lineColumns = []
+								for (var i = 0; i < columns.length; i++) {
+									let item = columns[i];
+									if(item.children != undefined){
+										lineColumns.push(item)
+										lineColumns.push(...item.children);
+									}else{
+										lineColumns.push(item)
+									}
+									
+								}
+								
+								// lineColumns.sort(function(a, b) {
+								//   return a.seq - b.seq;
+								// });
+								
+								// console.log("lineColumns", lineColumns)
+								// console.log("treeColumns", columns)
 								// this.$store.commit("SET_TAB_LIST", this.columns)
 								 // this.$store.dispatch('SetTabList',this.columns)
-								uni.setStorageSync('columns', columns);
+								uni.setStorageSync('treeColumns', columns);
+								uni.setStorageSync('columns', lineColumns);
 								uni.setStorageSync('defaultTabName', columns[0].name);
-								console.log("edit this.columns", columns)
-								for (var i = 0; i < columns.length; i++) {
-									this.columnIdIndexCache[columns[i].id] = i;
+								
+								uni.setStorageSync("applyListData", this.baseData)
+								
+								// console.log("edit this.columns", columns)
+								for (var i = 0; i < lineColumns.length; i++) {
+									this.columnIdIndexCache[lineColumns[i].id] = i;
 								}
 								uni.setStorageSync("columnIdIndexCache", this.columnIdIndexCache)
-								console.log("edit this.columnIdIndexCache", this.columnIdIndexCache)
+								// console.log("edit this.columnIdIndexCache", this.columnIdIndexCache)
 								
 								this.$store.dispatch('SetColumnIdIndexCacheMap', this.columnIdIndexCache)
+								
+								uni.hideLoading()
 								this.$tab.navigateTo('/pages/work/itemAddition/index')
 							}).catch(res => {
 								console.log(" edit queryTabsList", res)
+								uni.hideLoading()
 							})
 						},
 			change(e){
@@ -287,7 +318,7 @@
 		width: 100%;
 		/* 设置宽度 */
 		margin-bottom: 0px;
-		height: 70rpx;
+		height: 80rpx;
 	}
 	.item-remark {
 		display: flex;

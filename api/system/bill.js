@@ -7,7 +7,27 @@ export function getApplyGood(status, page, pageSize) {
     method: 'get'
   })
 }
-
+export function auditApplyGoodBill(billNumberList) {
+  return request({
+    url: '/system/applyGoods/auditBill',
+    method: 'post',
+	data: {"numberList":billNumberList}
+  })
+}
+export function unAuditApplyGoodBill(billNumberList) {
+  return request({
+    url: '/system/applyGoods/unAuditBill',
+    method: 'post',
+	data: {"numberList":billNumberList}
+  })
+}
+export function getApplyGoodByCondition(condition, status, page, pageSize) {
+	
+  return request({
+    url: '/system/applyGoods/conditionPage?condition='+window.btoa(encodeURIComponent(condition))+"&status="+status+"&page="+page+"&pageSize="+pageSize,
+    method: 'get'
+  })
+}
 export function queryApplyGood(billNumber) {
   return request({
     url: '/system/applyGoods/queryBill?billNumber='+billNumber,
