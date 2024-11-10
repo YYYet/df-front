@@ -164,7 +164,7 @@
 		}, {
 			"path": "pages/work/purchasedItemsViewer/index",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "查看",
 				"enablePullDownRefresh": false
 			}
 
