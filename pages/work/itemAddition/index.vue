@@ -32,8 +32,8 @@
 	import {
 		saveApplyGood
 	} from '@/api/system/bill.js'
-	
-	import {calculateLayoutHeight} from "@/utils/common.js"
+
+	import {calculateLayoutHeight, showConfirm} from "@/utils/common.js"
 	
 	export default {
 		components: {
@@ -122,54 +122,59 @@
 			},
 			submit() {
 				// this.$modal.msg("模拟提交");
-				let list = [];
-				// 显示加载框
-				uni.showLoading({
-				  title: '正在提交'
-				});
-				getMaterialAddedV2(1, 99999).then(res => {
-					list = res.result;
-						console.log("获取最新选购的物品");
-						uni.setStorageSync("materialDataAdded", list);
-						
-						let applicationTemplate = uni.getStorageSync("applicationTemplate")
-						let applyListData = uni.getStorageSync("applyListData")
-						const data = {
-							note: applyListData.remark,
-							reviceOrgNumber: applicationTemplate.orgNumber,
-							applyOrgNumber: applicationTemplate.orgNumber,
-							applyDate: new Date(),
-							arrivalDate: applicationTemplate.arrivalDate,
-							entry: list
-						};
-						
-							console.log("saveData", applicationTemplate, data)
-							saveApplyGood(data).then(res=>{
-								console.log("saveApplyGood", res)
-								clearShopV2().then(res => {
-									// uni.$emit("clearShopCart")
-									this.$modal.msg("提交成功");
-									
-									uni.hideLoading();
-									this.$tab.navigateBackPage(2)
-									uni.$emit('selectTab', 1);	
-							
-									
-								}).catch(error=>{
-										uni.hideLoading();
-								})
-						
-							}).catch(error =>{
-								//    let { message } = error
-								// this.$modal.msg("提交失败");
-								// 		console.log("saveApplyGood error", error, message)
-								// this.$modal.confirm(message)
-								uni.hideLoading();
-							})
-					}).catch(res=>{
-						this.$modal.msg("提交失败"+res);
-						uni.hideLoading();
-					});
+					showConfirm('是否确认提交?').then(res => {
+							if (res.confirm) {
+									let list = [];
+									// 显示加载框
+									uni.showLoading({
+									  title: '正在提交'
+									});
+									getMaterialAddedV2(1, 99999).then(res => {
+										list = res.result;
+											console.log("获取最新选购的物品");
+											uni.setStorageSync("materialDataAdded", list);
+											
+											let applicationTemplate = uni.getStorageSync("applicationTemplate")
+											let applyListData = uni.getStorageSync("applyListData")
+											const data = {
+												note: applyListData.remark,
+												reviceOrgNumber: applicationTemplate.orgNumber,
+												applyOrgNumber: applicationTemplate.orgNumber,
+												applyDate: new Date(),
+												arrivalDate: applicationTemplate.arrivalDate,
+												entry: list
+											};
+											
+												console.log("saveData", applicationTemplate, data)
+												saveApplyGood(data).then(res=>{
+													console.log("saveApplyGood", res)
+													clearShopV2().then(res => {
+														// uni.$emit("clearShopCart")
+														this.$modal.msg("提交成功");
+														
+														uni.hideLoading();
+														this.$tab.navigateBackPage(2)
+														uni.$emit('selectTab', 1);	
+												
+														
+													}).catch(error=>{
+															uni.hideLoading();
+													})
+											
+												}).catch(error =>{
+													//    let { message } = error
+													// this.$modal.msg("提交失败");
+													// 		console.log("saveApplyGood error", error, message)
+													// this.$modal.confirm(message)
+													uni.hideLoading();
+												})
+										}).catch(res=>{
+											this.$modal.msg("提交失败"+res);
+											uni.hideLoading();
+										});
+						}
+					})
+
 			},
 			getLastPage() {
 				let pages = getCurrentPages(); // 获取当前页面栈的实例
