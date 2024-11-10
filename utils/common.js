@@ -81,7 +81,7 @@ export function formatBillStatus(status) {
 export function formatDateV2(value) {
 	if (value) {
 		const date = new Date(value);
-		return `${date.getMonth() + 1}/${date.getDate()}`;
+		return `${date.getMonth() + 1}-${date.getDate()}`;
 	}
 }
 

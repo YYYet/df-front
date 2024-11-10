@@ -110,6 +110,7 @@
 					if (list != null || list.length != 0) {
 						console.log("界面刷新通过接口刷新tab角标");
 						uni.$emit("notic2tabBadgeRefresh", list)
+						uni.$emit("notic2tabOpen", list)
 					}
 				});
 			},

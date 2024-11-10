@@ -3,7 +3,7 @@
 
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
 		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList"
-			@virtualTopHeightChange="virtualTopHeightChange" show-refresher-update-time>
+			@virtualTopHeightChange="virtualTopHeightChange" show-refresher-update-time style="background-color: #F7F7F7;">
 			<template #top>
 				<view class="header">列表总数据量：{{total}}条</view>
 				<z-tabs :list="tabList" @change="tabChange"  :current="tabIndex"/>
@@ -24,15 +24,6 @@
 			<uni-fab ref="fab" :horizontal="horizontal" :vertical="vertical" @fabClick="fabClick" style="bottom: 100px;" />
 					<template #bottom>
 				<uni-row class="demo-uni-row">
-			<!-- 		<uni-col :span="12" v-show="false">
-						<view class="demo-uni-col light">
-							<button type="default">废弃</button>
-						</view>
-					</uni-col>
-					<uni-col :span="12">
-						<view class="demo-uni-col light">
-							<button type="default">合并</button>
-						</view></uni-col> -->
 					
 					<uni-col :span="24" v-show="tabIndex===1 && ( Object.keys(radioCache).length != 0)">
 						<view class="demo-uni-col light">
@@ -140,7 +131,8 @@
 		onShow() {
 
 		},
-		onLoad() {
+		onLoad(e) {
+			
 			uni.$on('selectTab', (tabIndex) => {
 				console.log("selectTab",tabIndex)
 				this.tabChange(tabIndex);
@@ -349,7 +341,7 @@
 	}
 
 	.header {
-		background-color: steelblue;
+		background-color: #1791FF;
 		font-size: 24rpx;
 		text-align: center;
 		padding: 20rpx 0rpx;

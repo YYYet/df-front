@@ -77,7 +77,7 @@
 						"buttons": [{
 							// "fontSrc": "static/unicons.ttf",
 							"text": "查询",
-							"fontSize": "10px"
+							"fontSize": "15px"
 						}]
 					}
 				}
@@ -212,6 +212,7 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "df",
 		"navigationBarBackgroundColor": "#FFFFFF",
+		// "navigationStyle": "custom",
 		"app-plus": {
 			"animationType": "fade-in",
 		    "animationDuration": 50

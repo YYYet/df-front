@@ -16,39 +16,39 @@
 						<uni-collapse ref="collapse" class="custom-collapse-bg" v-model="activeNames"
 							@change="handleCollapseChange">
 							<uni-collapse-item :title="item.name" v-for="(item,index) in treeColumns" :key="index"
-								:open="false" title-border="show" :border="false">
+								:open="index == 0" title-border="show" :border="false">
 								<uni-list v-show="item.children">
-									<uni-list-item clickable class="text-ellipsis__2" @click="activeItem(item)"
-										badge-positon="left" :badge-text="11+''">
+									<uni-list-item clickable :class="currentSelectItem.id == treeColumns[index].id?'text-ellipsis__2-active':'text-ellipsis__2'" :clickable="true" @click="activeItem(item)"
+										>
 										<template v-slot:footer>
 											<uni-badge class="uni-badge-left-margin"
 												:text="tabBadgeCache[findArrIndexById(treeColumns[index])]"
 												absolute="rightTop" :offset="[-3, -3]" size="small">
-												<text class="text-ellipsis__2">{{treeColumns[index].name}}</text>
+												<text :class="currentSelectItem.id == treeColumns[index].id?'text-ellipsis__2-active':'text-ellipsis__2'" >{{treeColumns[index].name}}</text>
 											</uni-badge>
 										</template>
 									</uni-list-item>
 
 
 									<uni-list-item clickable v-for="(subItem,subIndex) in item.children" :key="subIndex"
-										class="text-ellipsis__2" @click="activeItem(subItem)">
+										:class="currentSelectItem.id == subItem.id?'text-ellipsis__2-active':'text-ellipsis__2'" @click="activeItem(subItem)" :clickable="true">
 										<template v-slot:footer>
 											<uni-badge class="uni-badge-left-margin"
 												:text="tabBadgeCache[findArrIndexById(subItem)]" absolute="rightTop"
 												:offset="[-3, -3]" size="small">
-												<text class="text-ellipsis__2">{{subItem.name}}</text>
+												<text :class="currentSelectItem.id == subItem.id?'text-ellipsis__2-active':'text-ellipsis__2'">{{subItem.name}}</text>
 											</uni-badge>
 										</template>
 									</uni-list-item>
 								</uni-list>
 								<uni-list v-show="!item.children">
 									<view>
-										<uni-list-item clickable class="text-ellipsis__2" @click="activeItem(item)">
+										<uni-list-item clickable :class="currentSelectItem.id == treeColumns[index].id?'text-ellipsis__2-active':'text-ellipsis__2'" @click="activeItem(item)" :clickable="true">
 											<template v-slot:footer>
 												<uni-badge class="uni-badge-left-margin"
 													:text="tabBadgeCache[findArrIndexById(treeColumns[index])]"
 													absolute="rightTop" :offset="[-3, -3]" size="small">
-													<text class="text-ellipsis__2">{{treeColumns[index].name}}</text>
+													<text :class="currentSelectItem.id == treeColumns[index].id?'text-ellipsis__2-active':'text-ellipsis__2'">{{treeColumns[index].name}}</text>
 												</uni-badge>
 											</template>
 										</uni-list-item>
@@ -123,6 +123,7 @@
 				columns: [],
 				treeColumns: [],
 				childrenColumns: [],
+				currentSelectItem: {},
 				tabList: ['测试1', '测试2', '测试3', '测试4'],
 				parentTabList: ['测试1', '测试2', '测试3', '测试4'],
 				current: 0,
@@ -151,8 +152,16 @@
 			uni.$off('watchDataList');
 			uni.$off('notic2refresh');
 			uni.$off('notic2tabBadgeRefresh');
+			uni.$off('notic2tabOpen');
+			uni.$off('clearShopCart');
 		},
-
+		onUnload() {
+			uni.$off('watchDataList');
+			uni.$off('notic2refresh');
+			uni.$off('notic2tabBadgeRefresh');
+			uni.$off('notic2tabOpen');
+			uni.$off('clearShopCart');
+		},
 		onShow() {
 
 		},
@@ -193,6 +202,13 @@
 				this.refeshTabBadge(item);
 			});
 
+			console.log("cartshopcreated 注册notic2tabOpen")
+			uni.$on('notic2tabOpen', (item) => {
+				console.log("触发购物车tab打开", item, this.columns);
+				this.noticTabOpen(item);
+			});
+
+
 			console.log("cartshopcreated 注册clearShopCart")
 			uni.$on('clearShopCart', (item) => {
 				console.log("触发购物车清空", item);
@@ -203,7 +219,10 @@
 			uni.setStorageSync('sideCurrentIndex', 0);
 			console.log("columns", uni.getStorageSync('columns'))
 			this.columns = uni.getStorageSync('columns');
-
+			if(this.columns != undefined || this.columns.length != 0){
+				this.currentSelectItem = this.columns[0];
+			}
+			
 
 			this.treeColumns = uni.getStorageSync('treeColumns');
 			console.log("localColumns", this.columns)
@@ -230,6 +249,32 @@
 		},
 
 		methods: {
+			needOpenTab(item){
+				// let needOpenList = this.columns.filter(cloum => cloum.id == item.id);
+				// let needOpenObj = needOpenList.reduce((acc, cloum) => {
+				//   acc[cloum.id] = cloum.value; // 以item.id为键，item.value为值
+				//   return acc;
+				// }, {});;
+				//  console.log("needOpenTab", this.needOpenObj, needOpenList)
+				 var cIndex = 0;
+				 for (var i = 0; i < this.columns.length; i++) {
+					if(this.columns[i].id == item.id){
+						cIndex = i;
+						break;
+					}
+				 }
+				 console.log("tttt", cIndex, this.columns)
+				 console.log("this.tabBadgeCache[cIndex]", this.tabBadgeCache[cIndex], this.tabBadgeCache[cIndex]  != 0, this.tabBadgeCache)
+				 if(this.tabBadgeCache[cIndex]  != 0){
+					 return true;
+				 }
+				 return false;
+			},
+			noticTabOpen(list){
+			
+				console.log("需要默认打开的tab", list, this.tabBadgeCache, this.columns)
+		
+			},
 			handleCollapseChange(arr) {
 				console.log("handleCollapseChange", arr)
 			},
@@ -244,7 +289,7 @@
 			activeItem(item) {
 				// console.log("activeNames", item)
 				console.log("点击左侧tab==>", item)
-
+				this.currentSelectItem = item;
 				this.handleSideClick = true
 				this.sideCurrentIndex = this.findArrIndexById(item);
 				this.tabName = item.name
@@ -537,7 +582,7 @@
 		text-overflow: ellipsis;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
-		font-size: 10px;
+		font-size: 15px;
 		background-color: #f1f1f1;
 	}
 
@@ -547,7 +592,7 @@
 		text-overflow: ellipsis;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
-		font-size: 10px;
+		font-size: 15px;
 		background-color: white;
 	}
 

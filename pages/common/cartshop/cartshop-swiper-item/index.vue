@@ -1,7 +1,7 @@
 <template>
 	<view class="side-b">
 		<z-paging v-if="firstLoaded || isCurrentPage" ref="paging" v-model="dataList" @query="queryList" :fixed="false"
-			:auto-show-system-loading="true" :system-loading-mask="true" show-refresher-update-time>
+			:auto-show-system-loading="true" :system-loading-mask="true" show-refresher-update-time >
 			<uni-card v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<MaterialInfo :item="item" :currentIndex="index" :needNumberSelector="true"
 					@numberComputed="numberComputed"></MaterialInfo>

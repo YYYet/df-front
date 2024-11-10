@@ -4,6 +4,8 @@ module.exports = {
   // baseUrl: 'http://192.168.114.180:28080',
   // baseUrl: 'http://localhost:28080',
   baseUrl: 'http://103.85.85.48:30174',
+  // baseUrl: 'http://192.168.31.47:28080',
+
   // 应用信息
   appInfo: {
     // 应用名称

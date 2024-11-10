@@ -15,7 +15,12 @@
 	      };
 	    },
     onLaunch: function() {
-
+	 //  if (this.$dd.env.platform !== "notInDingTalk") {
+		// let style = document.createElement('style');
+		// style.type = 'text/css';
+		// style.innerHTML = "uni-page-head,.uni-page-head{display:none;}";
+		// document.getElementsByTagName('head').item(0).appendChild(style);
+	 //  }
       this.initApp()
     },
 
@@ -57,10 +62,13 @@
 </script>
 
 <style lang="scss">
+  @import "@/uni_modules/uview-ui/index.scss";
   @import '@/static/scss/index.scss';
   @import '@/static/scss/animations.scss';
   @import '@/static/css/animate.min.css';
   
+
+   
     .loading {
       animation: spin 1s linear infinite;
     }

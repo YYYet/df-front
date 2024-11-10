@@ -1,6 +1,6 @@
 <template>
 	<view class="card-with-stripe">
-					<uni-card :is-shadow="false" class="card-content">
+					<uni-card :is-shadow="false" class="card-content"  style="background-color: #F7F7F7;">
 						<uni-row>
 							<text class="text"  style="text-align: left; text-align: center;color: black;font-weight: bolder;font-size: 34rpx;" v-text="baseFormData.materialName"></text>
 						</uni-row>	
@@ -84,7 +84,8 @@
 }
 
 .card-content {
-  padding: 20px; /* 根据需要设置内边距 */
+  
+  height: 110px;
 }
 
 
