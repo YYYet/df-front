@@ -3,13 +3,17 @@
 
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
 		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList"
-			@virtualTopHeightChange="virtualTopHeightChange" show-refresher-update-time style="background-color: #F7F7F7;">
+			@virtualTopHeightChange="virtualTopHeightChange" show-refresher-update-time style="background-color: #F7F7F7;" 
+			show-loading-more-when-reload>
 			<template #top>
 				<view class="header">列表总数据量：{{total}}条</view>
 				<z-tabs :list="tabList" @change="tabChange"  :current="tabIndex"/>
 			</template>
 			<template #cell="{item,index}">
-				<view class="item">
+				<!-- 'animate__animated animate__backInLeft': cardMoveOutAnimationCache[item.billNumber], -->
+				<!-- ,
+				 'animate__animated  animate__slideInLeft': !cardMoveOutAnimationCache[item.billNumber] -->
+				<view v-bind:class="{ 'item': true }" :id="item.id">
 					<view v-show="tabIndex==1||tabIndex==2" style="margin-left: 20rpx;">
 						<radio class="radio" @click="radioClick(item)" :checked="radioCache[item.billNumber]"
 							:value="item.billNumber"></radio>
@@ -24,7 +28,6 @@
 			<uni-fab ref="fab" :horizontal="horizontal" :vertical="vertical" @fabClick="fabClick" style="bottom: 100px;" />
 					<template #bottom>
 				<uni-row class="demo-uni-row">
-					
 					<uni-col :span="24" v-show="tabIndex===1 && ( Object.keys(radioCache).length != 0)">
 						<view class="demo-uni-col light">
 							<button type="primary" @click="billOp('audit')">提交</button>
@@ -88,7 +91,9 @@
 	import {
 		getApplyGood,getApplyGoodByCondition,unAuditApplyGoodBill,auditApplyGoodBill
 	} from '@/api/system/bill.js'
-
+	import {
+		showConfirm
+	} from '@/utils/common.js'
 	export default {
 		components: {
 			// 注册组件
@@ -98,6 +103,7 @@
 			return {
 				// , '已分单', '已汇总', '状态1', '状态2', '状态3'
 				tabList: ['全部', '暂存', '已提交'],
+				cardMoveOutAnimationCache:{},
 				billQueryObj: {
 					material: "",
 					billNumber:""
@@ -129,46 +135,84 @@
 			}
 		},
 		onShow() {
-
+			
+			this.$nextTick(()=>{
+				this.$refs.paging.refresh()
+			})
 		},
 		onLoad(e) {
-			
 			uni.$on('selectTab', (tabIndex) => {
 				console.log("selectTab",tabIndex)
 				this.tabChange(tabIndex);
 			});	
 		},
 		methods: {
+			isOpenMoveAnimation(item){
+				if(this.cardMoveOutAnimationCache[item.id] == undefined || this.cardMoveOutAnimationCache[item.id] == false){
+					
+				}
+			},
+			test(arr){
+				console.log("virtualList.sync ", arr)
+			},
 			billOp(op){
 				console.log("当前页面选中的单据", this.radioCache)
 				if(this.radioCache == null || Object.keys(this.radioCache).length === 0){
 					return;
 				}
-				if(op == "audit"){
-					uni.showLoading({
-					  title: '提交中，请稍后', // 提示信息
-					  mask: true // 显示透明蒙层防止触摸穿透
-					});
-					auditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
+	
+				const opMap = {
+					"audit": ()=>{
+						uni.showLoading({
+						  title: '提交中，请稍后', // 提示信息
+						  mask: true // 显示透明蒙层防止触摸穿透
+						});
+						let billNumberList = Object.keys(this.radioCache);
 						
-						this.$modal.msgSuccess("提交成功")
-						uni.hideLoading()
-						this.$refs.paging.refresh()
-					});
-				}
-				if(op == "unAudit"){
-					uni.showLoading({
-					  title: '撤销中，请稍后', // 提示信息
-					  mask: true // 显示透明蒙层防止触摸穿透
-					});
-					unAuditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
-					
-						this.$modal.msgSuccess("撤销成功")
-						uni.hideLoading()
+						// this.cardMoveOutAnimationCache[list[i].id]
+						auditApplyGoodBill(billNumberList).then(res=>{
+							// this.$modal.msgSuccess("提交成功")
+							uni.hideLoading()
+							showConfirm('单据提交成功：\n\r'+billNumberListStr);
 							this.$refs.paging.refresh()
-					});
+						
+							// for (var i = 0; i < billNumberList.length; i++) {
+							// 	this.cardMoveOutAnimationCache[billNumberList[i]] = true;
+							// }
+						}).catch(error=>{
+							uni.hideLoading()
+						});
+						 this.radioCache = {};
+					},
+					"unAudit":()=>{
+						uni.showLoading({
+						  title: '撤销中，请稍后', // 提示信息
+						  mask: true // 显示透明蒙层防止触摸穿透
+						});
+						let billNumberList = Object.keys(this.radioCache);
+										
+						unAuditApplyGoodBill(Object.keys(this.radioCache)).then(res=>{
+							// this.$modal.msgSuccess("撤销成功")
+							uni.hideLoading()
+							showConfirm('单据撤销成功：\n\r'+billNumberListStr);
+							this.$refs.paging.refresh()
+							
+						}).catch(error=>{
+							uni.hideLoading()
+						});
+						 this.radioCache = {};
+					}
 				}
-				this.radioCache = {};
+				
+				let billNumberListStr = Object.keys(this.radioCache).join("\n\r");
+				showConfirm('请确认是否'+(op == "audit"?"提交":"撤销")+"单据：\n\r"+billNumberListStr).then(res => {
+					if (res.confirm) {
+						opMap[op]();
+					}
+				})
+				
+	
+	
 			},
 			queryBtnClick(isQuery){
 				if(isQuery){
@@ -273,7 +317,8 @@
 			
 				this.$nextTick(()=>{
 						this.$refs.paging.reload();
-						
+						this.radioCache = {}
+						this.cardMoveOutAnimationCache = {}
 				})
 			},
 			virtualTopHeightChange(topHeight) {
@@ -293,8 +338,11 @@
 					let list = res.result.data;
 					this.total = res.result.total;
 					console.log("list", res)
+					for (var i = 0; i < list.length; i++) {
+						this.cardMoveOutAnimationCache[list[i].billNumber] = false;
+					}
 					this.$refs.paging.complete(list);
-					this.$modal.closeLoading()
+					// this.$modal.closeLoading()
 				}).catch(res => {
 					// 如果请求失败写this.$refs.paging.complete(false);
 					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理

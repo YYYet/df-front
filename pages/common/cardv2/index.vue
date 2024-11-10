@@ -23,15 +23,17 @@
 								justify-content: center;"></text>
 						</uni-col>
 						<uni-col :span="6" align="right">
-							<view class="tag-view" style="text-align: justify;">
+							<view>
 								<uni-tag :text="billStatus(baseFormData.status)" type="success" 
-								style="background-color: #DEF3EE;color: #35B893;
-								display: inline;font-weight: bold;margin-left: auto;" 
-								v-show="billStatus(baseFormData.status)=='已提交'"/>
-								<uni-tag :text="billStatus(baseFormData.status)" type="primary"
+								:style="{'background-color': billStatus(baseFormData.status)=='已提交'?'#DEF3EE':'#E5F3FE',
+								'color': billStatus(baseFormData.status)=='已提交'?'#35B893':'#1591FF',
+								'display': 'inline','font-weight': 'bold','margin-left': 'auto'}" 
+								/>
+								
+						<!-- 		<uni-tag :text="billStatus(baseFormData.status)" type="primary"
 								style="background-color: #E5F3FE;color: #1591FF;
 								display: inline;font-weight: bold;margin-left: auto;"
-								v-show="billStatus(baseFormData.status).startsWith('暂')"/>
+								v-show="billStatus(baseFormData.status).startsWith('暂')"></uni-tag> -->
 							</view>
 						</uni-col>
 					</uni-row>
@@ -80,7 +82,7 @@
 					</uni-row>
 				</view>
 				
-					<u-line></u-line>
+					<u-line ></u-line>
 					<template v-slot:actions>
 						<uni-row style="display: flex;justify-content: flex-end;height: 50px;align-items: center;">
 							<label >

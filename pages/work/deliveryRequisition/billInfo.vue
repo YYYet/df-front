@@ -1,5 +1,5 @@
 <template>
-	<view class="page fade" animation="slide-in-right">
+	<view class="page fade animate__animated" animation="slide-in-right">
 		
 		<view class="content">
 
@@ -34,7 +34,7 @@
 										申请模板:</text>
 								</view>
 								<view style="margin-left: auto;">
-									<text class="text" style="text-align: left; color: black;">111</text>
+									<text class="text" style="text-align: left; color: black;">测试数据暂时固定</text>
 								</view>
 							</view>
 						</label>
@@ -152,7 +152,7 @@
 								</uni-col>
 								<uni-col :span="6" align="right">
 									<text style="color: #1592FD;height: 60px;font-size: 25px;"
-										class="uni-body">20</text>
+										class="uni-body">0</text>
 								</uni-col>
 								<uni-col :span="4">
 									<text style="color: black;height: 60px;font-size: 15px;"
@@ -277,8 +277,8 @@
 							});
 						}
 					})
-
 				}
+				
 				if (formatBillStatus(this.materialInfo.status) == '暂存') {
 					showConfirm('是否提交该单据').then(res => {
 						if (res.confirm) {
