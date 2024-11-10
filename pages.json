@@ -126,7 +126,7 @@
 		}, {
 			"path": "pages/work/itemAddition/index",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "购物车",
 				"enablePullDownRefresh": false
 			}
 
@@ -171,7 +171,7 @@
 		}, {
 			"path": "pages/common/cartshop/cartshop-search/index",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "物料搜索",
 				"enablePullDownRefresh": false
 			}
 
