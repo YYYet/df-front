@@ -308,10 +308,13 @@
 				if (formatBillStatus(this.materialInfo.status) == '已提交') {
 					showConfirm('是否撤销该单据').then(res => {
 						if (res.confirm) {
-							this.$modal.loading("撤销中");
+							uni.showLoading({
+							  title: '撤销中，请稍后', // 提示信息
+							  mask: true // 显示透明蒙层防止触摸穿透
+							});
 							unAuditApplyGoodBill([this.billNumber]).then(res => {
 								this.queryBill();
-								this.$modal.closeLoading()
+								uni.hideLoading()
 								this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
 								// toast("撤销成功")
 							});
@@ -322,11 +325,14 @@
 				if (formatBillStatus(this.materialInfo.status) == '暂存') {
 					showConfirm('是否提交该单据').then(res => {
 						if (res.confirm) {
-							this.$modal.loading("提交中");
+							uni.showLoading({
+							  title: '提交中，请稍后', // 提示信息
+							  mask: true // 显示透明蒙层防止触摸穿透
+							});
 							auditApplyGoodBill([this.billNumber]).then(res => {
 								this.queryBill();
-								this.$modal.closeLoading()
-								this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
+								uni.hideLoading()
+								this.$modal.confirm("单据提交成功\n\r"+this.billNumber);
 								// toast("提交成功")
 							});
 						}
