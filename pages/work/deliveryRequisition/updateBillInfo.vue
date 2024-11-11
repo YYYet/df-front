@@ -204,13 +204,15 @@
 				</uni-row>
 				<u-line></u-line>
 
-				<uni-swipe-action>
+				<uni-swipe-action ref="swipeAction">
 
 					<uni-swipe-action-item v-for="(card, index) in dataList" :key="index"
 						@click="onClick(index, card, $event)" :right-options="options1"
-						v-if="hideDataMap[card.materialId] == undefined" show="left">
+						:ref="'swipeAction' + index"
+						 >
 						<cardv4 :baseFormData="card" @numberBoxChangeValue="numberBoxChangeValue"></cardv4>
 					</uni-swipe-action-item>
+
 
 				</uni-swipe-action>
 
@@ -311,10 +313,10 @@
 						"materialName": newSelectItem.name
 					}
 					
-					// 该元素之前被隐藏，现在需要重现
-					if(this.hideDataMap[newSelectItem.id] != undefined && this.hideDataMap[newSelectItem.id]){
-						delete this.hideDataMap[newSelectItem.id];
-					}
+					// // 该元素之前被隐藏，现在需要重现
+					// if(this.hideDataMap[newSelectItem.id] != undefined && this.hideDataMap[newSelectItem.id]){
+					// 	delete this.hideDataMap[newSelectItem.id];
+					// }
 		
 					this.dataList.push(material);	
 					console.log("向newEntryList中push", this.newEntryList)
@@ -339,11 +341,18 @@
 
 			formatBillStatus,
 			onClick(index, card, event) {
-				console.log('点击了' + (event.position === 'left' ? '左侧' : '右侧') + event.content.text + '按钮', card)
+				console.log('点击了' + (event.position === 'left' ? '左侧' : '右侧') + event.content.text + '按钮', card,index)
+				   
 				if (event.position === 'right') {
+					let refFlag = 'swipeAction' + index;
+					// this.$refs[refFlag][0].closeHandler();
+					this.$refs.swipeAction.closeAll();
+					
 					this.deleteEntryList.push(card);
 					this.newEntryList = this.dataList.filter(item => !this.deleteEntryList.includes(item));
-					this.$set(this.hideDataMap, card.materialId, true);
+					// this.$delete(this.dataList, index)
+					this.dataList.splice(index, 1)
+					// this.$set(this.hideDataMap, card.materialId, true);
 					console.log("this.newEntryList", this.newEntryList)
 				}
 			},
