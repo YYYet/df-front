@@ -58,6 +58,7 @@
 			changeValue(val){
 				console.log(val)
 				this.baseFormData.qty = val;
+				this.$emit("numberBoxChangeValue", val, this.baseFormData)
 			}
 		}
 	}

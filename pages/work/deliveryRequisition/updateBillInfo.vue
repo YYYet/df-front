@@ -1,7 +1,7 @@
 <template>
 	<view class="page fade animate__animated" animation="slide-in-right">
 		<u-picker :show="uViewPickShow" :columns="columns" @confirm="selectTemplate"
-			@cancel="uViewpickShow = false"></u-picker>
+			@cancel="uViewPickShow = false"></u-picker>
 		<u-calendar :show="uViewCalendarShow" @close="uViewCalendarShow = false" @confirm="selectDate">
 		</u-calendar>
 		<view class="content">
@@ -154,7 +154,7 @@
 				<uni-row>
 					<uni-col :span="12" style="text-align: left;">
 						<view style="margin-left: 10%;">
-							共<text class="text" v-text="'  '+ dataList.length+'  '" style="color: #1592FD;"
+							共<text class="text" v-text="'  '+ newEntryList.length+'  '" style="color: #1592FD;"
 								width="50rpx"></text>条数据
 						</view>
 					</uni-col>
@@ -208,8 +208,8 @@
 
 					<uni-swipe-action-item v-for="(card, index) in dataList" :key="index"
 						@click="onClick(index, card, $event)" :right-options="options1"
-						v-show="hideDataMap[card.id] == undefined">
-						<cardv4 :baseFormData="card"></cardv4>
+						v-show="hideDataMap[card.materialId] == undefined">
+						<cardv4 :baseFormData="card" @numberBoxChangeValue="numberBoxChangeValue"></cardv4>
 					</uni-swipe-action-item>
 
 				</uni-swipe-action>
@@ -289,16 +289,35 @@
 		onLoad(query) {
 			console.log("query", query)
 			
-			uni.$on('selectUpdateMaterial', (val, index, item) => {
+			uni.$on('selectUpdateMaterial', (obj) => {
 				// this.filterList(data.name);
-				console.log("回到更新界面", item)
-				let material = {
-					orderWarehouse: "",
-					qty: item.nums,
-					unitName: item.unit,
-					materialName: item.name
+				console.log("回到更新界面", obj)
+				let arr2 = Object.values(obj);
+				// let material = {
+				// 	orderWarehouse: "",
+				// 	qty: item.nums,
+				// 	unitName: item.unit,
+				// 	materialName: item.name
+				// }
+				
+				for (var i = 0; i < arr2.length; i++) {
+					let newSelectItem = arr2[i];
+					console.log("newSelectItem", newSelectItem)
+					let material = {
+						"orderWarehouse": "",
+						"qty": newSelectItem.nums,
+						"materialId": newSelectItem.id,
+						"unitName": newSelectItem.unit,
+						"materialName": newSelectItem.name
+					}
+		
+					this.dataList.push(material);	
+					this.newEntryList.push(material);	
 				}
-				this.dataList.push(material);
+				
+		
+				console.log("this.dataList", this.dataList)
+				// this.dataList.push(material);
 			});
 			// 获取传递的参数
 			this.billNumber = query.billNumber;
@@ -308,6 +327,7 @@
 		},
 		created() {
 			this.queryBill();
+			
 		},
 		methods: {
 
@@ -317,7 +337,7 @@
 				if (event.position === 'right') {
 					this.deleteEntryList.push(card);
 					this.newEntryList = this.dataList.filter(item => !this.deleteEntryList.includes(item));
-					this.$set(this.hideDataMap, card.id, true);
+					this.$set(this.hideDataMap, card.materialId, true);
 					console.log("this.newEntryList", this.newEntryList)
 				}
 			},
@@ -329,6 +349,7 @@
 			selectTemplate(e) {
 				this.currentSelectTemp = this.tempList[e.indexs[0]];
 				this.materialInfo.tempName = this.currentSelectTemp.name;
+				this.materialInfo.tempNo = this.currentSelectTemp.billNumber
 				this.materialInfo.arrivalDate = this.currentSelectTemp.arrivalDate;
 				this.uViewPickShow = false;
 				console.log("selectTemplate", e, this.currentSelectTemp)
@@ -364,9 +385,19 @@
 					this.$modal.confirm("该单据已提交，若需编辑请先撤销");
 					return;
 				}
+
 				if (e.index == 0) {}
 			},
+			numberBoxChangeValue(val, item){
+				console.log("numberBoxChangeValue", val, item)
+				
+			},
 			onTap(e) {
+				
+				console.log("this.materialInfo ", this.materialInfo , this.newEntryList)
+				
+				this.$modal.confirm("更新接口暂未对接，此处仅作模拟，以下为更新所需数据\n\r TEMP "+ JSON.stringify(this.materialInfo) + "\n\r ENTRY" + JSON.stringify(this.newEntryList))
+				
 				// console.log("onTap", e)
 				// console.log("this.materialInfo", this.materialInfo)
 
@@ -404,6 +435,7 @@
 					this.materialInfo = res.result;
 					this.materialListSize = this.materialInfo.entry.length;
 					this.dataList = this.materialInfo.entry;
+					this.newEntryList = this.dataList;
 					console.log(this.billNumber, res);
 					this.$nextTick(() => {
 						this.setList()
@@ -419,7 +451,10 @@
 				// this.$refs.materialPaging.complete(this.materialInfo.entry)
 			},
 			gotoSearch() {
-				this.$tab.navigateTo('/pages/common/material-search/index')
+				console.log("this.currentSelectTemp", this.currentSelectTemp)
+						console.log("billEntry", this.dataList)
+				uni.setStorageSync("billEntry", this.dataList);
+				this.$tab.navigateTo('/pages/common/material-search/index?currentTempNo='+this.materialInfo.tempNo)
 			}
 		}
 	}

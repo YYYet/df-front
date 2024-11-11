@@ -30,11 +30,16 @@
 					style="margin-left: 20%;" :step="item.step" />
 			</uni-col>
 		</uni-row>
-		<uni-row class="demo-uni-row" style="display: flex;" v-show="needAddBtn">
-			<uni-col :span="12">
+		<uni-row class="demo-uni-row" style="display: flex;"  v-show="needCheckButton" >
+			<uni-col :span="20">
 			</uni-col>
-			<uni-col :span="12" style="justify-content: flex-end;align-items: flex-end;">
-				<u-button type="primary" :plain="true" text="添加" style="margin-left: 20%;"></u-button>
+			<uni-col :span="4"  align = "right">
+				<u-checkbox-group :name="'box-group-'+item.id">
+					<u-checkbox
+								:checked="checkButtonDefaultChecked"
+					            :customStyle="{marginBottom: '8px'}" :disabled="checkButtonDefaultDisabled"
+					            :name="'box-'+item.id" label="选择" @change="checkboxChange"/>
+					</u-checkbox-group>
 			</uni-col>
 		</uni-row>
 		<!-- </uni-card> -->
@@ -47,20 +52,25 @@
 			return {
 				// dataList:[],
 				// cacheMap:{}
+			
 			}
 		},
 		props: {
 			needNumberSelector: {
 				type: Boolean,
-				default: function() {
-					return false
-				}
+				default: false
 			},
-			needAddBtn: {
+			needCheckButton: {
 				type: Boolean,
-				default: function() {
-					return false
-				}
+				default: false
+			},
+			checkButtonDefaultChecked: {
+				type: Boolean,
+				default: false
+			},
+			checkButtonDefaultDisabled: {
+				type: Boolean,
+				default: false
 			},
 			item: {
 				type: Object,
@@ -85,6 +95,9 @@
 			// }
 		},
 		methods: {
+			   checkboxChange(n) {
+						this.$emit("checkBox", n, this.item)
+			        },
 			numberComputed(val, currentIndex, item) {
 				// this.selectCache[this.sideCurrentIndex][index] += val;
 				// item.nums = val
