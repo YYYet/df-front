@@ -220,7 +220,7 @@
             "path" : "pages/common/material-search/index",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "物料搜索",
                 "enablePullDownRefresh": false
             }
             

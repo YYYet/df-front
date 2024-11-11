@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<z-paging ref="cardSearchPaging" use-virtual-list @query="queryList" v-model="dataList">
+		<z-paging ref="cardSearchPaging" use-virtual-list @query="queryList" v-model="dataList" :refresher-enabled="false">
 			<template #top>
 				<SearchBar :readonly="false" @input="input"></SearchBar>
 			</template>
