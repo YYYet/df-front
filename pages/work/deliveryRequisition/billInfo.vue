@@ -267,13 +267,16 @@
 			onTap(e) {
 				console.log("onTap", e)
 				console.log("this.materialInfo", this.materialInfo)
-
+				
 				if (formatBillStatus(this.materialInfo.status) == '已提交') {
 					showConfirm('是否撤销该单据').then(res => {
 						if (res.confirm) {
+							this.$modal.loading("撤销中");
 							unAuditApplyGoodBill([this.billNumber]).then(res => {
 								this.queryBill();
-								toast("撤销成功")
+								this.$modal.closeLoading()
+								this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
+								// toast("撤销成功")
 							});
 						}
 					})
@@ -282,9 +285,12 @@
 				if (formatBillStatus(this.materialInfo.status) == '暂存') {
 					showConfirm('是否提交该单据').then(res => {
 						if (res.confirm) {
+							this.$modal.loading("提交中");
 							auditApplyGoodBill([this.billNumber]).then(res => {
 								this.queryBill();
-								toast("提交成功")
+								this.$modal.closeLoading()
+								this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
+								// toast("提交成功")
 							});
 						}
 					})

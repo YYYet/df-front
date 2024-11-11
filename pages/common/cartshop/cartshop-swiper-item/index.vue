@@ -86,7 +86,8 @@
 				item.seq = index
 				item.currentTabIndex = this.currentIndex
 				// this.$set(this.dataList, index, item);
-				addOrUpDateShopV2(item).then(res => {
+				let tempNo = uni.getStorageSync("applicationTemplate").billNumber
+				addOrUpDateShopV2(tempNo, item).then(res => {
 					console.log("添加物品到购物车", res)
 					this.$set(this.dataList, index, item);
 				})

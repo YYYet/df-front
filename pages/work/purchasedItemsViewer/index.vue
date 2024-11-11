@@ -57,7 +57,8 @@
 				// 		result.push(item);
 				// 	}
 				// }
-				getMaterialAddedV2(pageNo, pageSize).then(res=>{
+				let tempNo = uni.getStorageSync("applicationTemplate").billNumber;
+				getMaterialAddedV2(tempNo, pageNo, pageSize).then(res=>{
 						this.$refs.cardPaging.complete(res.result)
 				})		
 						

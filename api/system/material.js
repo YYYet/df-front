@@ -45,15 +45,15 @@ export function getMaterialByNameV2(name, billNo, page, pageSize) {
     method: 'get'
   })
 }
-export function getMaterialAddedV2(page, pageSize) {
-	
+export function getMaterialAddedV2(tempNo, page, pageSize) {
+	console.log(tempNo, page, pageSize)
   return request({
-    url: '/system/material/getMaterialAddedV2?&page='+page+"&pageSize="+pageSize,
+    url: '/system/material/getMaterialAddedV2/'+tempNo+'?page='+page+"&pageSize="+pageSize,
     method: 'get'
   })
 }
 
-export function addOrUpDateShopV2(item) {
+export function addOrUpDateShopV2(tempNo, item) {
  //     private Integer createOrgId;
     // private Integer groupId;
     // private String name;
@@ -64,16 +64,16 @@ export function addOrUpDateShopV2(item) {
     // private Integer useOrgId;
 
   return request({
-    url: '/system/material/addOrUpDateShopV2',
+    url: '/system/material/addOrUpDateShopV2/'+tempNo,
     method: 'post',
 	data: item
   })
 }
 
-export function clearShopV2(page, pageSize) {
+export function clearShopV2(tempNo) {
 	
   return request({
-    url: '/system/material/clearShopV2',
+    url: '/system/material/clearShopV2/'+tempNo,
     method: 'get'
   })
 }

@@ -104,7 +104,9 @@
 		methods: {
 			calculateLayoutHeight,
 			refeshTabBadgeAndBottomNumsByNet() {
-				getMaterialAddedV2(1, 99999).then(res => {
+				let tempNo = uni.getStorageSync("applicationTemplate").billNumber;
+				console.log("getMaterialAddedV2", tempNo)
+				getMaterialAddedV2(tempNo, 1, 99999).then(res => {
 					let list = res.result;
 						console.log("界面刷新获取的物料信息", list);
 					if (list != null || list.length != 0) {
@@ -116,7 +118,8 @@
 			},
 			clearShop() {
 				this.$modal.msg("清空购物车")
-				clearShopV2().then(res => {
+				let tempNo = uni.getStorageSync("applicationTemplate").billNumber
+				clearShopV2(tempNo).then(res => {
 					uni.$emit("clearShopCart")
 				})
 			},
@@ -129,12 +132,15 @@
 									uni.showLoading({
 									  title: '正在提交'
 									});
-									getMaterialAddedV2(1, 99999).then(res => {
+									let tempNo = uni.getStorageSync("applicationTemplate").billNumber;
+									console.log("getMaterialAddedV2", tempNo)
+									getMaterialAddedV2(tempNo, 1, 99999).then(res => {
 										list = res.result;
 											console.log("获取最新选购的物品");
 											uni.setStorageSync("materialDataAdded", list);
 											
 											let applicationTemplate = uni.getStorageSync("applicationTemplate")
+											console.log("applicationTemplate", applicationTemplate)
 											let applyListData = uni.getStorageSync("applyListData")
 											const data = {
 												note: applyListData.remark,
@@ -148,7 +154,8 @@
 												console.log("saveData", applicationTemplate, data)
 												saveApplyGood(data).then(res=>{
 													console.log("saveApplyGood", res)
-													clearShopV2().then(res => {
+													let tempNo = uni.getStorageSync("applicationTemplate").billNumber
+													clearShopV2(tempNo).then(res => {
 														// uni.$emit("clearShopCart")
 														this.$modal.msg("提交成功");
 														
