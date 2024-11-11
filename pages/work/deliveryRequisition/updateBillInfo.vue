@@ -208,7 +208,7 @@
 
 					<uni-swipe-action-item v-for="(card, index) in dataList" :key="index"
 						@click="onClick(index, card, $event)" :right-options="options1"
-						v-show="hideDataMap[card.materialId] == undefined">
+						v-if="hideDataMap[card.materialId] == undefined" show="left">
 						<cardv4 :baseFormData="card" @numberBoxChangeValue="numberBoxChangeValue"></cardv4>
 					</uni-swipe-action-item>
 
@@ -310,8 +310,13 @@
 						"unitName": newSelectItem.unit,
 						"materialName": newSelectItem.name
 					}
+					
+					// 该元素之前被隐藏，现在需要重现
+					if(this.hideDataMap[newSelectItem.id] != undefined && this.hideDataMap[newSelectItem.id]){
+						delete this.hideDataMap[newSelectItem.id];
+					}
 		
-					// this.dataList.push(material);	
+					this.dataList.push(material);	
 					console.log("向newEntryList中push", this.newEntryList)
 					this.newEntryList.push(material);	
 				}
