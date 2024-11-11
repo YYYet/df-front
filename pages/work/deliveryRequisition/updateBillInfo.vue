@@ -320,7 +320,7 @@
 		
 					this.dataList.push(material);	
 					console.log("向newEntryList中push", this.newEntryList)
-					this.newEntryList.push(material);	
+					// this.newEntryList.push(material);	
 				}
 				
 		
@@ -348,12 +348,12 @@
 					// this.$refs[refFlag][0].closeHandler();
 					this.$refs.swipeAction.closeAll();
 					
-					this.deleteEntryList.push(card);
-					this.newEntryList = this.dataList.filter(item => !this.deleteEntryList.includes(item));
+					// this.deleteEntryList.push(card);
+					// this.newEntryList = this.dataList.filter(item => !this.deleteEntryList.includes(item));
 					// this.$delete(this.dataList, index)
 					this.dataList.splice(index, 1)
 					// this.$set(this.hideDataMap, card.materialId, true);
-					console.log("this.newEntryList", this.newEntryList)
+					console.log("this.dataList", this.dataList)
 				}
 			},
 			selectDate(e) {
@@ -409,9 +409,9 @@
 			},
 			onTap(e) {
 				
-				console.log("this.materialInfo ", this.materialInfo , this.newEntryList)
+				console.log("this.materialInfo ", this.materialInfo , this.dataList)
 				
-				this.$modal.confirm("更新接口暂未对接，此处仅作模拟，以下为更新所需数据\n\r TEMP "+ JSON.stringify(this.materialInfo) + "\n\r ENTRY" + JSON.stringify(this.newEntryList))
+				this.$modal.confirm("更新接口暂未对接，此处仅作模拟，以下为更新所需数据\n\r TEMP "+ JSON.stringify(this.materialInfo) + "\n\r ENTRY" + JSON.stringify(this.dataList))
 				
 				// console.log("onTap", e)
 				// console.log("this.materialInfo", this.materialInfo)
@@ -468,7 +468,7 @@
 			gotoSearch() {
 				console.log("this.currentSelectTemp", this.currentSelectTemp)
 						console.log("billEntry", this.dataList)
-				uni.setStorageSync("billEntry", this.newEntryList);
+				uni.setStorageSync("billEntry", this.dataList);
 				this.$tab.navigateTo('/pages/common/material-search/index?currentTempNo='+this.materialInfo.tempNo)
 			}
 		}
