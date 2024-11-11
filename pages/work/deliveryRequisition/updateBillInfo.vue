@@ -311,7 +311,8 @@
 						"materialName": newSelectItem.name
 					}
 		
-					this.dataList.push(material);	
+					// this.dataList.push(material);	
+					console.log("向newEntryList中push", this.newEntryList)
 					this.newEntryList.push(material);	
 				}
 				
@@ -453,7 +454,7 @@
 			gotoSearch() {
 				console.log("this.currentSelectTemp", this.currentSelectTemp)
 						console.log("billEntry", this.dataList)
-				uni.setStorageSync("billEntry", this.dataList);
+				uni.setStorageSync("billEntry", this.newEntryList);
 				this.$tab.navigateTo('/pages/common/material-search/index?currentTempNo='+this.materialInfo.tempNo)
 			}
 		}
