@@ -9,15 +9,21 @@
 								<uni-forms-item label="订货仓库:" class="item" label-width="auto" err-show-type="none"  >
 										<text class="text"  v-text="baseFormData.orderWarehouse"></text>
 								</uni-forms-item>
+								
 								<uni-row>
-									<uni-col :span="20">
-										<uni-forms-item label="备注:" class="item"  label-width="auto"  err-show-type="none" >
+									
+									<uni-col :span="8" align="right" :offset="12">
+									<!-- 	<uni-forms-item label="备注:" class="item"  label-width="auto"  err-show-type="none" >
 												<text class="text" v-text="baseFormData.remark"></text>
-										</uni-forms-item>
+										</uni-forms-item> -->
+								
+									
+									<uni-number-box :value="baseFormData.qty" background="#fff" color="#000" @change="changeValue" />
+									
 									</uni-col>
 									<uni-col :span="4" >
 										<uni-forms-item class="item" style="text-align: right;"  err-show-type="none" >
-												<text class="text" style="font-size: 30rpx;font-weight: bold;color: #000;"  v-text="baseFormData.qty" ></text>
+												<!-- <text class="text" style="font-size: 30rpx;font-weight: bold;color: #000;"  v-text="baseFormData.qty" ></text> -->
 												<!-- <uni-number-box v-model="baseFormData.qty" v-show="showNumberBox" style="margin-right: ;"></uni-number-box> -->
 												<text class="text"  v-text="baseFormData.unitName"></text>
 										</uni-forms-item>
@@ -49,12 +55,45 @@
 		  }
 		},
 		methods: {
-			
+			changeValue(val){
+				console.log(val)
+				this.baseFormData.qty = val;
+			}
 		}
 	}
 </script>
 
 <style>
+	.minus {
+			width: 22px;
+			height: 22px;
+			border-width: 1px;
+			border-color: #E6E6E6;
+			border-style: solid;
+			border-top-left-radius: 100px;
+			border-top-right-radius: 100px;
+			border-bottom-left-radius: 100px;
+			border-bottom-right-radius: 100px;
+			@include flex;
+			justify-content: center;
+			align-items: center;
+		}
+	
+		.input {
+			padding: 0 10px;
+		}
+	
+		.plus {
+			width: 22px;
+			height: 22px;
+			background-color: #FF0000;
+			border-radius: 50%;
+			/* #ifndef APP-NVUE */
+			display: flex;
+			/* #endif */
+			justify-content: center;
+			align-items: center;
+		}
 	.numberText {
 	    display: block;
 	    font-size: 13px;

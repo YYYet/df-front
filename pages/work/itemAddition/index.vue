@@ -51,8 +51,8 @@
 				goodsNum: 0
 			}
 		},
-		onLoad() {
-			console.log("onLoad")
+		onLoad(e) {
+			console.log("onLoad",e)
 		},
 	
 		onBackPress(e) {
@@ -142,8 +142,12 @@
 											let applicationTemplate = uni.getStorageSync("applicationTemplate")
 											console.log("applicationTemplate", applicationTemplate)
 											let applyListData = uni.getStorageSync("applyListData")
+											let tempNo = applicationTemplate.billNumber;
+											let tempName = applicationTemplate.name;
 											const data = {
 												note: applyListData.remark,
+												tempNo: tempNo,
+												tempName: tempName,
 												reviceOrgNumber: applicationTemplate.orgNumber,
 												applyOrgNumber: applicationTemplate.orgNumber,
 												applyDate: new Date(),

@@ -67,7 +67,50 @@
   @import '@/static/scss/animations.scss';
   @import '@/static/css/animate.min.css';
   
+  
+  .custom-fab-add ::v-deep.uni-icons.uniui-plusempty.fab-circle-icon {
+  		font-size: 0 !important;
+  	}
+  
+  .custom-fab-add ::v-deep.uniui-plusempty:before {
+  		content: "新增" !important;
+  		font-size: 16px;
+  		color: #fff;
+  		font-weight: bold;
+  }
 
+  .custom-fab-submit ::v-deep.uni-icons.uniui-plusempty.fab-circle-icon {
+  		font-size: 0 !important;
+  	}
+  
+  .custom-fab-submit ::v-deep.uniui-plusempty:before {
+  		content: "提交" !important;
+  		font-size: 16px;
+  		color: #fff;
+  		font-weight: bold;
+  }
+
+  .custom-fab-undo ::v-deep.uni-icons.uniui-plusempty.fab-circle-icon {
+  		font-size: 0 !important;
+  	}
+  
+  .custom-fab-undo ::v-deep.uniui-plusempty:before {
+  		content: "撤销" !important;
+  		font-size: 16px;
+  		color: #fff;
+  		font-weight: bold;
+  }
+  
+  .custom-fab-update ::v-deep.uni-icons.uniui-plusempty.fab-circle-icon {
+  		font-size: 0 !important;
+  	}
+  
+  .custom-fab-update ::v-deep.uniui-plusempty:before {
+  		content: "更新" !important;
+  		font-size: 16px;
+  		color: #fff;
+  		font-weight: bold;
+  }
    
     .loading {
       animation: spin 1s linear infinite;

@@ -30,6 +30,13 @@
 					style="margin-left: 20%;" :step="item.step" />
 			</uni-col>
 		</uni-row>
+		<uni-row class="demo-uni-row" style="display: flex;" v-show="needAddBtn">
+			<uni-col :span="12">
+			</uni-col>
+			<uni-col :span="12" style="justify-content: flex-end;align-items: flex-end;">
+				<u-button type="primary" :plain="true" text="添加" style="margin-left: 20%;"></u-button>
+			</uni-col>
+		</uni-row>
 		<!-- </uni-card> -->
 	</view>
 </template>
@@ -44,6 +51,12 @@
 		},
 		props: {
 			needNumberSelector: {
+				type: Boolean,
+				default: function() {
+					return false
+				}
+			},
+			needAddBtn: {
 				type: Boolean,
 				default: function() {
 					return false

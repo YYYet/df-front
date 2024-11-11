@@ -87,14 +87,33 @@
 		}, {
 			"path": "pages/work/deliveryRequisition/billInfo",
 			"style": {
-				// "app-plus": {
-				// 					   "animationType": "fade-in",
-				// 					   		"animationDuration": 1300},
+				
 				"navigationBarTitleText": "配送申请单详情",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					// "animationType": "fade-in",
+					// 		"animationDuration": 1300,
+					"titleNView": {
+						"buttons": [{
+							// "fontSrc": "static/unicons.ttf",
+							"text": "编辑",
+							"fontSize": "15px"
+						}]
+					}
+				}
 			}
 
-		}, {
+		},
+		{
+			"path": "pages/work/deliveryRequisition/updateBillInfo",
+			"style": {
+				"navigationBarTitleText": "配送申请单更新",
+				"enablePullDownRefresh": false
+			}
+		
+		}
+		
+		, {
 			"path": "pages/common/cardv1/cardv1",
 			"style": {
 				"navigationBarTitleText": "",
@@ -110,6 +129,13 @@
 
 		}, {
 			"path": "pages/common/cardv3/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		} ,{
+			"path": "pages/common/cardv4/index",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
@@ -190,7 +216,16 @@
 				"navigationBarTitleText" : ""
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/common/material-search/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"tabBar": {
 		"color": "#000000",
 		"selectedColor": "#000000",

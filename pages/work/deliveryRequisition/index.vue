@@ -25,7 +25,8 @@
 				</view>
 
 			</template>
-			<uni-fab ref="fab" :horizontal="horizontal" :vertical="vertical" @fabClick="fabClick" style="bottom: 100px;" />
+		
+			
 					<template #bottom>
 				<uni-row class="demo-uni-row">
 					<uni-col :span="24" v-show="tabIndex===1 && ( Object.keys(radioCache).length != 0)">
@@ -41,7 +42,9 @@
 				</uni-row>
 			</template>
 		</z-paging>
-
+	<uni-fab ref="fab" class="custom-fab-add" :horizontal="horizontal" :vertical="vertical" @fabClick="fabClick"  />
+	
+		
 		<!-- 普通弹窗 -->
 		<uni-popup ref="popup" background-color="#fff" border-radius="10px 10px 0 0" type="bottom" :showClose="true"
 			title="我的标题">
@@ -299,7 +302,6 @@
 			onNavigationBarButtonTap(e) {
 				console.log('高级查询', e)
 				if (e.index == 0) {
-				
 					this.toggle('bottom');
 				}
 			},
@@ -371,6 +373,11 @@
 </script>
 
 <style scoped>
+
+
+
+
+	
 /* 		/deep/.uni-fab__circle {
 		margin-bottom: 10%;
 	} */

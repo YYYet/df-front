@@ -1,12 +1,15 @@
 <template>
 	<view class="page fade animate__animated" animation="slide-in-right">
-		
+		<u-picker :show="uViewPickShow" :columns="columns" @confirm="selectTemplate"
+			@cancel="uViewpickShow = false"></u-picker>
+		<u-calendar :show="uViewCalendarShow" @close="uViewCalendarShow = false" @confirm="selectDate">
+		</u-calendar>
 		<view class="content">
 
 			<!-- 		<uni-row v-for="(item, index) in materialInfo.entry" :key="index">
 				<cardv3 :baseFormData="item"></cardv3>
 			</uni-row> -->
-		
+
 			<uni-card :is-shadow="false" :title="billNumber" :is-full="false" style="border-radius: 20rpx;">
 				<template v-slot:title>
 					<view style="margin-top: 20px;">
@@ -34,11 +37,14 @@
 										申请模板:</text>
 								</view>
 								<view style="margin-left: auto;">
-									<text class="text" style="text-align: left; color: black;">{{materialInfo.tempName}}</text>
+									<!-- <text class="text" style="text-align: left; color: black;" @click="pickTemplate">{{materialInfo.tempName}}</text> -->
+									<u--text suffixIcon="arrow-right" iconStyle="font-size: 12px"
+										:text="materialInfo.tempName" @click="pickTemplate"></u--text>
 								</view>
 							</view>
 						</label>
 					</uni-row>
+
 					<uni-row style="margin-top: 5px;">
 						<label>
 							<view style="display: flex;">
@@ -47,8 +53,12 @@
 										到货时间:</text>
 								</view>
 								<view style="margin-left: auto;">
-									<text class="text" style="text-align: left; color: black;">
-										{{materialInfo.arrivalDate | formatDate}}</text>
+									<!-- <u-cell  :title="materialInfo.arrivalDate | formatDate" :isLink="true" arrow-direction="left" @click="uViewCalendarShow = true"></u-cell> -->
+									<u--text suffixIcon="arrow-right" iconStyle="font-size: 12px"
+										:text="materialInfo.arrivalDate | formatDate"
+										@click="uViewCalendarShow = true"></u--text>
+									<!-- 	<text class="text" style="text-align: left; color: black;" @click="uViewCalendarShow = true">
+										{{materialInfo.arrivalDate | formatDate}}</text><u-icon name="arrow-right"></u-icon> -->
 								</view>
 							</view>
 						</label>
@@ -102,26 +112,19 @@
 									<text class="text" style="font-size: 12px;color: #909399;letter-spacing: 2px;">
 										备注:</text>
 								</view>
-								<view style="margin-left: auto;">
-									<text class="text"
-										style="text-align: left; color: black;">{{materialInfo.note}}</text>
-								</view>
+
 							</view>
 						</label>
 					</uni-row>
+					<uni-row>
+						<u--textarea v-model="materialInfo.note" placeholder="请输入内容"></u--textarea>
+					</uni-row>
 				</view>
-				<!-- :class="{ 'custom-fab-undo':billStatus(materialInfo.status)=='已提交', 'custom-fab-submit':billStatus(materialInfo.status).startsWith('暂')}" -->
-				
-	<!-- <fabv1 @onTap="onTap"></fabv1> -->
-			</uni-card>
-			
-		<!-- 	<uni-fab ref="fab" horizontal="right" vertical="bottom" @fabClick="onTap" 
-			:class="'custom-fab-'+fabTxt"/> -->
-			
-			<uni-fab ref="fab" horizontal="right" vertical="bottom" @fabClick="onTap" class="custom-fab-submit" v-show="fabTxt == 'submit'"/>
-			<uni-fab ref="fab" horizontal="right" vertical="bottom" @fabClick="onTap" class="custom-fab-undo"  v-show="fabTxt == 'undo'"/>
 
-<!-- 			<uni-card>
+				<!-- <fabv1 @onTap="onTap"></fabv1> -->
+			</uni-card>
+			<uni-fab ref="fab" horizontal="right" class="custom-fab-update" vertical="bottom" @fabClick="onTap" />
+			<!-- 			<uni-card>
 				<uni-row>
 					<uni-col :span="12">
 						<view class="light">
@@ -157,7 +160,7 @@
 					</uni-col>
 					<uni-col :span="12" style="text-align: right;">
 						<view style="margin-right: 10%;">
-							<text class="text" style="color: #1592FD;" @click="gotoFilter()">筛选</text>
+							<text class="text" style="color: #1592FD;" @click="gotoSearch()">增加</text>
 						</view>
 					</uni-col>
 				</uni-row>
@@ -172,8 +175,7 @@
 									<text style="color: black;height: 60px;" class="uni-body">货物总重量</text>
 								</uni-col>
 								<uni-col :span="6" align="right">
-									<text style="color: #1592FD;height: 60px;font-size: 25px;"
-										class="uni-body">0</text>
+									<text style="color: #1592FD;height: 60px;font-size: 25px;" class="uni-body">0</text>
 								</uni-col>
 								<uni-col :span="4">
 									<text style="color: black;height: 60px;font-size: 15px;"
@@ -201,9 +203,22 @@
 					</uni-col>
 				</uni-row>
 				<u-line></u-line>
-				<uni-row v-for="(item, index) in dataList" :key="index">
+
+				<uni-swipe-action>
+
+					<uni-swipe-action-item v-for="(card, index) in dataList" :key="index"
+						@click="onClick(index, card, $event)" :right-options="options1"
+						v-show="hideDataMap[card.id] == undefined">
+						<cardv4 :baseFormData="card"></cardv4>
+					</uni-swipe-action-item>
+
+				</uni-swipe-action>
+
+
+
+				<!-- 	<uni-row v-for="(item, index) in dataList" :key="index">
 					<cardv3 :baseFormData="item"></cardv3>
-				</uni-row>
+				</uni-row> -->
 			</uni-card>
 		</view>
 	</view>
@@ -211,11 +226,13 @@
 
 <script>
 	import cardv3 from '../../common/cardv3/index.vue'
+	import cardv4 from '../../common/cardv4/index.vue'
 	import fabV1 from "@/pages/common/fabv1/index.vue"
 	import {
 		queryApplyGood,
 		unAuditApplyGoodBill,
-		auditApplyGoodBill
+		auditApplyGoodBill,
+		queryTemplate
 	} from '@/api/system/bill.js'
 	import {
 		formatBillStatus,
@@ -223,23 +240,37 @@
 		toast
 	} from '@/utils/common.js'
 
-
+	import MaterialInfo from "@/pages/common/material-info/index.vue"
 	export default {
 		components: {
 			// 注册组件
 			'cardv3': cardv3,
-			'fabv1': fabV1
+			'cardv4': cardv4,
+			'fabv1': fabV1,
+			'MaterialInfo': MaterialInfo
 		},
 		data() {
 			return {
 				billNumber: '',
 				materialListSize: 0,
-				fabTxt: "",
 				materialInfo: {
 					createDate: ""
 				},
+				options1: [{
+					text: '删除'
+				}],
+				uViewPickShow: false,
+				uViewCalendarShow: false,
+				currentSelectTemp: {},
+				columns: [
+					[]
+				],
 				dataList: [],
+				hideDataMap: {},
+				tempList: [],
 				materialList: [],
+				deleteEntryList: [],
+				newEntryList: [],
 				x: 0,
 				y: 0,
 				x1: 0,
@@ -253,12 +284,21 @@
 			}
 		},
 		onUnload() {
-			uni.$off('refreshBillEntryInfo');
+			uni.$off('selectUpdateMaterial');
 		},
 		onLoad(query) {
 			console.log("query", query)
-			uni.$on('refreshBillEntryInfo', (data) => {
-				this.filterList(data.name);
+			
+			uni.$on('selectUpdateMaterial', (val, index, item) => {
+				// this.filterList(data.name);
+				console.log("回到更新界面", item)
+				let material = {
+					orderWarehouse: "",
+					qty: item.nums,
+					unitName: item.unit,
+					materialName: item.name
+				}
+				this.dataList.push(material);
 			});
 			// 获取传递的参数
 			this.billNumber = query.billNumber;
@@ -270,21 +310,48 @@
 			this.queryBill();
 		},
 		methods: {
-			scrolltolower() {
 
-			},
 			formatBillStatus,
+			onClick(index, card, event) {
+				console.log('点击了' + (event.position === 'left' ? '左侧' : '右侧') + event.content.text + '按钮', card)
+				if (event.position === 'right') {
+					this.deleteEntryList.push(card);
+					this.newEntryList = this.dataList.filter(item => !this.deleteEntryList.includes(item));
+					this.$set(this.hideDataMap, card.id, true);
+					console.log("this.newEntryList", this.newEntryList)
+				}
+			},
+			selectDate(e) {
+				console.log("selectDate", e)
+				this.materialInfo.arrivalDate = e[0];
+				this.uViewCalendarShow = false;
+			},
+			selectTemplate(e) {
+				this.currentSelectTemp = this.tempList[e.indexs[0]];
+				this.materialInfo.tempName = this.currentSelectTemp.name;
+				this.materialInfo.arrivalDate = this.currentSelectTemp.arrivalDate;
+				this.uViewPickShow = false;
+				console.log("selectTemplate", e, this.currentSelectTemp)
+			},
+			pickTemplate() {
+				queryTemplate().then(response => {
+					var result = response.result;
+					this.tempList = result;
+					if (result.length == 0) {
+						this.$modal.msg("无匹配的模板")
+					} else {
+						this.$set(this.columns, 0, result.map(item => {
+							return item.name
+						}))
+						console.log("templateList", this.columns)
+						this.uViewPickShow = true;
+						// this.$refs.ChPicker.show()
+					}
+
+				})
+			},
 			billStatus(status) {
 				let text = this.formatBillStatus(status);
-			
-			if(text === "已提交"){
-				this.fabTxt = "undo";
-			}
-			
-			if(text === "暂存"){
-				this.fabTxt = "submit";
-			}
-			
 				if (text.length === 2) {
 					return text[0] + '\xa0\xa0\xa0\xa0' + text[1]; // 在两个字的文本中间添加不间断空格
 				}
@@ -292,47 +359,45 @@
 
 			},
 			onNavigationBarButtonTap(e) {
-						console.log('编辑', e)
-						if(this.billStatus(this.materialInfo.status)=='已提交'){
-							this.$modal.confirm("该单据已提交，若需编辑请先撤销");
-							return;
-						}
-						if (e.index == 0) {
-							this.$tab.navigateTo('/pages/work/deliveryRequisition/updateBillInfo?billNumber=' + this.billNumber)
-						}
-					},
+				console.log('编辑', e)
+				if (this.billStatus(this.materialInfo.status) == '已提交') {
+					this.$modal.confirm("该单据已提交，若需编辑请先撤销");
+					return;
+				}
+				if (e.index == 0) {}
+			},
 			onTap(e) {
-				console.log("onTap", e)
-				console.log("this.materialInfo", this.materialInfo)
-				
-				if (formatBillStatus(this.materialInfo.status) == '已提交') {
-					showConfirm('是否撤销该单据').then(res => {
-						if (res.confirm) {
-							this.$modal.loading("撤销中");
-							unAuditApplyGoodBill([this.billNumber]).then(res => {
-								this.queryBill();
-								this.$modal.closeLoading()
-								this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
-								// toast("撤销成功")
-							});
-						}
-					})
-				}
-				
-				if (formatBillStatus(this.materialInfo.status) == '暂存') {
-					showConfirm('是否提交该单据').then(res => {
-						if (res.confirm) {
-							this.$modal.loading("提交中");
-							auditApplyGoodBill([this.billNumber]).then(res => {
-								this.queryBill();
-								this.$modal.closeLoading()
-								this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
-								// toast("提交成功")
-							});
-						}
-					})
+				// console.log("onTap", e)
+				// console.log("this.materialInfo", this.materialInfo)
 
-				}
+				// if (formatBillStatus(this.materialInfo.status) == '已提交') {
+				// 	showConfirm('是否撤销该单据').then(res => {
+				// 		if (res.confirm) {
+				// 			this.$modal.loading("撤销中");
+				// 			unAuditApplyGoodBill([this.billNumber]).then(res => {
+				// 				this.queryBill();
+				// 				this.$modal.closeLoading()
+				// 				this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
+				// 				// toast("撤销成功")
+				// 			});
+				// 		}
+				// 	})
+				// }
+
+				// if (formatBillStatus(this.materialInfo.status) == '暂存') {
+				// 	showConfirm('是否提交该单据').then(res => {
+				// 		if (res.confirm) {
+				// 			this.$modal.loading("提交中");
+				// 			auditApplyGoodBill([this.billNumber]).then(res => {
+				// 				this.queryBill();
+				// 				this.$modal.closeLoading()
+				// 				this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
+				// 				// toast("提交成功")
+				// 			});
+				// 		}
+				// 	})
+
+				// }
 			},
 			queryBill() {
 				queryApplyGood(this.billNumber).then(res => {
@@ -353,9 +418,8 @@
 			setList() {
 				// this.$refs.materialPaging.complete(this.materialInfo.entry)
 			},
-			gotoFilter() {
-				this.$tab.navigateTo('/pages/work/deliveryRequisition/filter')
-
+			gotoSearch() {
+				this.$tab.navigateTo('/pages/common/material-search/index')
 			}
 		}
 	}

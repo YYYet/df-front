@@ -124,3 +124,18 @@ export function isChinese(value) {
 const reg = /^[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]+$/;
   return reg.test(str);
 }
+
+export function fabResetContent(value) {
+  // .custom-fab-add ::v-deep.uni-icons.uniui-plusempty.fab-circle-icon {
+  // 		font-size: 0 !important;
+  // 	}
+  
+  // .custom-fab-add ::v-deep.uniui-plusempty:before {
+  // 		content: "新增" !important;
+  // 		font-size: 16px;
+  // 		color: #fff;
+  // 		font-weight: bold;
+  // }
+  
+
+}
