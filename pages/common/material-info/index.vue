@@ -22,7 +22,7 @@
 				<view style="color: darkgray;font-size: 20rpx;">在途入库: {{ item.storageInTransitNums }}</view>
 			</uni-col>
 		</uni-row>
-		<uni-row class="demo-uni-row" style="display: flex;" v-show="needNumberSelector">
+		<uni-row class="demo-uni-row" style="display: flex;" v-if="needNumberSelector">
 			<uni-col :span="12">
 			</uni-col>
 			<uni-col :span="12" style="justify-content: flex-end;align-items: flex-end;">
@@ -30,7 +30,7 @@
 					style="margin-left: 20%;" :step="item.step" />
 			</uni-col>
 		</uni-row>
-		<uni-row class="demo-uni-row" style="display: flex;"  v-show="needCheckButton" >
+		<uni-row class="demo-uni-row" style="display: flex;"  v-if="needCheckButton" >
 			<uni-col :span="20">
 			</uni-col>
 			<uni-col :span="4"  align = "right">
