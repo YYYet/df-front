@@ -135,9 +135,26 @@
 									let tempNo = uni.getStorageSync("applicationTemplate").billNumber;
 									console.log("getMaterialAddedV2", tempNo)
 									getMaterialAddedV2(tempNo, 1, 99999).then(res => {
-										list = res.result;
+										    list = res.result;
 											console.log("获取最新选购的物品");
 											uni.setStorageSync("materialDataAdded", list);
+											let entryList = [];
+											for (var i = 0; i < list.length; i++) {
+												let entry = list[i]
+												const d = {
+													  createOrgId : entry.createOrgId,
+													  groupId: entry.groupId,
+													  materialId:  entry.id,
+													  materialName: entry.name,
+													  materialNumber: entry.number,
+													  nums: entry.nums,
+													  unitName: entry.unit,
+													  unitNumber: entry.unitNumber,
+													  unitID: entry.unitID,
+													  useOrgId: entry.useOrgId
+												}
+												entryList.push(d);
+											}
 											
 											let applicationTemplate = uni.getStorageSync("applicationTemplate")
 											console.log("applicationTemplate", applicationTemplate)
@@ -152,7 +169,7 @@
 												applyOrgNumber: applicationTemplate.orgNumber,
 												applyDate: new Date(),
 												arrivalDate: applicationTemplate.arrivalDate,
-												entry: list
+												entry: entryList
 											};
 											
 												console.log("saveData", applicationTemplate, data)

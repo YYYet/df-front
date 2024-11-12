@@ -42,7 +42,13 @@ export function queryApplyGood(billNumber) {
 	  data: data
     })
   }
-
+  export function updateApplyGood(data) {
+    return request({
+      url: '/system/applyGoods/updateBill',
+      method: 'post',
+	  data: data
+    })
+  }
 export function queryWarehouse() {
   return request({
     url: '/system/warehouse/queryWarehouse',

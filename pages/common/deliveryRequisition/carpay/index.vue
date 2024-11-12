@@ -6,11 +6,11 @@
                 <view class="cart" @click="clickCart">
                     <view class="badge">{{goodsNum}}</view>
                 </view>
-                <view class="ml-25 text-30">￥{{goodsTotalPrice}}</view>
+                <!-- <view class="ml-25 text-30">￥{{goodsTotalPrice}}</view> -->
             </view>
             <view class="fcc">
                 <view class="pay fcc text-30 h-80 text-white "
-                        @click="submit">提交
+                        @click="submit">保存
                 </view>
             </view>
         </view>

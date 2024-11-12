@@ -19,7 +19,7 @@
 								<uni-tag :text="billStatus(materialInfo.status)" type="success" style="background-color: #DEF3EE;color: #35B893;
 										font-weight: bold;amargin-left:auto;" v-show="billStatus(materialInfo.status)=='已提交'" />
 								<uni-tag :text="billStatus(materialInfo.status)" type="primary" style="background-color: #E5F3FE;color: #1591FF;
-												font-weight: bold;margin-left:auto;" v-show="billStatus(materialInfo.status).startsWith('暂')" />
+												font-weight: bold;margin-left:auto;" v-show="billStatus(materialInfo.status).startsWith('保')" />
 							</uni-col>
 						</uni-row>
 					</view>
@@ -254,11 +254,17 @@
 		},
 		onUnload() {
 			uni.$off('refreshBillEntryInfo');
+			uni.$off('refreshBillInfo');
 		},
 		onLoad(query) {
 			console.log("query", query)
 			uni.$on('refreshBillEntryInfo', (data) => {
+				console.log("刷新分录")
 				this.filterList(data.name);
+			});
+			uni.$on('refreshBillInfo', () => {
+				console.log("刷新整单")
+				this.queryBill();
 			});
 			// 获取传递的参数
 			this.billNumber = query.billNumber;
@@ -281,7 +287,7 @@
 				this.fabTxt = "undo";
 			}
 			
-			if(text === "暂存"){
+			if(text === "保存"){
 				this.fabTxt = "submit";
 			}
 			
@@ -322,7 +328,7 @@
 					})
 				}
 				
-				if (formatBillStatus(this.materialInfo.status) == '暂存') {
+				if (formatBillStatus(this.materialInfo.status) == '保存') {
 					showConfirm('是否提交该单据').then(res => {
 						if (res.confirm) {
 							uni.showLoading({

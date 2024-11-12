@@ -105,7 +105,7 @@
 		data() {
 			return {
 				// , '已分单', '已汇总', '状态1', '状态2', '状态3'
-				tabList: ['全部', '暂存', '已提交'],
+				tabList: ['全部', '保存', '已提交'],
 				cardMoveOutAnimationCache:{},
 				billQueryObj: {
 					material: "",

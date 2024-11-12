@@ -22,7 +22,7 @@
 								<uni-tag :text="billStatus(materialInfo.status)" type="success" style="background-color: #DEF3EE;color: #35B893;
 										font-weight: bold;amargin-left:auto;" v-show="billStatus(materialInfo.status)=='已提交'" />
 								<uni-tag :text="billStatus(materialInfo.status)" type="primary" style="background-color: #E5F3FE;color: #1591FF;
-												font-weight: bold;margin-left:auto;" v-show="billStatus(materialInfo.status).startsWith('暂')" />
+												font-weight: bold;margin-left:auto;" v-show="billStatus(materialInfo.status).startsWith('保')" />
 							</uni-col>
 						</uni-row>
 					</view>
@@ -207,9 +207,7 @@
 				<uni-swipe-action ref="swipeAction">
 
 					<uni-swipe-action-item v-for="(card, index) in dataList" :key="index"
-						@click="onClick(index, card, $event)" :right-options="options1"
-						:ref="'swipeAction' + index"
-						 >
+						@click="onClick(index, card, $event)" :right-options="options1" :ref="'swipeAction' + index">
 						<cardv4 :baseFormData="card" @numberBoxChangeValue="numberBoxChangeValue"></cardv4>
 					</uni-swipe-action-item>
 
@@ -230,6 +228,9 @@
 	import cardv3 from '@/pages/common/cardv3/index.vue'
 	import cardv4 from '@/pages/common/cardv4/index.vue'
 	import MaterialInfo from "@/pages/common/deliveryRequisition/material-info/index.vue"
+	import {
+		updateApplyGood
+	} from "@/api/system/bill.js"
 	import {
 		queryApplyGood,
 		unAuditApplyGoodBill,
@@ -289,7 +290,7 @@
 		},
 		onLoad(query) {
 			console.log("query", query)
-			
+
 			uni.$on('selectUpdateMaterial', (obj) => {
 				// this.filterList(data.name);
 				console.log("回到更新界面", obj)
@@ -300,7 +301,7 @@
 				// 	unitName: item.unit,
 				// 	materialName: item.name
 				// }
-				
+
 				for (var i = 0; i < arr2.length; i++) {
 					let newSelectItem = arr2[i];
 					console.log("newSelectItem", newSelectItem)
@@ -308,21 +309,25 @@
 						"orderWarehouse": "",
 						"qty": newSelectItem.nums,
 						"materialId": newSelectItem.id,
+						"materialNumber": newSelectItem.number,
 						"unitName": newSelectItem.unit,
+						"unitId": newSelectItem.unitID,
+						"unitNumber": newSelectItem.unitNumber,
 						"materialName": newSelectItem.name
 					}
-					
+
 					// // 该元素之前被隐藏，现在需要重现
 					// if(this.hideDataMap[newSelectItem.id] != undefined && this.hideDataMap[newSelectItem.id]){
 					// 	delete this.hideDataMap[newSelectItem.id];
 					// }
-		
-					this.dataList.push(material);	
-					console.log("向newEntryList中push", this.newEntryList)
+
+					this.dataList.push(material);
+					// this.dataList.push(newSelectItem);	
+					console.log("向dataList中push", this.dataList)
 					// this.newEntryList.push(material);	
 				}
-				
-		
+
+
 				console.log("this.dataList", this.dataList)
 				// this.dataList.push(material);
 			});
@@ -333,20 +338,21 @@
 
 		},
 		created() {
+			this.initTemplate();
 			this.queryBill();
-			
+
 		},
 		methods: {
 
 			formatBillStatus,
 			onClick(index, card, event) {
-				console.log('点击了' + (event.position === 'left' ? '左侧' : '右侧') + event.content.text + '按钮', card,index)
-				   
+				console.log('点击了' + (event.position === 'left' ? '左侧' : '右侧') + event.content.text + '按钮', card, index)
+
 				if (event.position === 'right') {
 					let refFlag = 'swipeAction' + index;
 					// this.$refs[refFlag][0].closeHandler();
 					this.$refs.swipeAction.closeAll();
-					
+
 					// this.deleteEntryList.push(card);
 					// this.newEntryList = this.dataList.filter(item => !this.deleteEntryList.includes(item));
 					// this.$delete(this.dataList, index)
@@ -369,20 +375,21 @@
 				console.log("selectTemplate", e, this.currentSelectTemp)
 			},
 			pickTemplate() {
+				if (this.tempList.length == 0) {
+					this.$modal.msg("无匹配的模板")
+				} else {
+					this.$set(this.columns, 0, this.tempList.map(item => {
+						return item.name
+					}))
+					console.log("templateList", this.columns)
+					this.uViewPickShow = true;
+					// this.$refs.ChPicker.show()
+				}
+			},
+			initTemplate() {
 				queryTemplate().then(response => {
 					var result = response.result;
 					this.tempList = result;
-					if (result.length == 0) {
-						this.$modal.msg("无匹配的模板")
-					} else {
-						this.$set(this.columns, 0, result.map(item => {
-							return item.name
-						}))
-						console.log("templateList", this.columns)
-						this.uViewPickShow = true;
-						// this.$refs.ChPicker.show()
-					}
-
 				})
 			},
 			billStatus(status) {
@@ -402,47 +409,76 @@
 
 				if (e.index == 0) {}
 			},
-			numberBoxChangeValue(val, item){
+			numberBoxChangeValue(val, item) {
 				console.log("numberBoxChangeValue", val, item)
-				
+
 			},
 			onTap(e) {
-				
-				console.log("this.materialInfo ", this.materialInfo , this.dataList)
-				
-				this.$modal.confirm("更新接口暂未对接，此处仅作模拟，以下为更新所需数据\n\r TEMP "+ JSON.stringify(this.materialInfo) + "\n\r ENTRY" + JSON.stringify(this.dataList))
-				
-				// console.log("onTap", e)
-				// console.log("this.materialInfo", this.materialInfo)
 
-				// if (formatBillStatus(this.materialInfo.status) == '已提交') {
-				// 	showConfirm('是否撤销该单据').then(res => {
-				// 		if (res.confirm) {
-				// 			this.$modal.loading("撤销中");
-				// 			unAuditApplyGoodBill([this.billNumber]).then(res => {
-				// 				this.queryBill();
-				// 				this.$modal.closeLoading()
-				// 				this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
-				// 				// toast("撤销成功")
-				// 			});
-				// 		}
-				// 	})
-				// }
+				console.log("this.materialInfo ", this.materialInfo, this.dataList)
 
-				// if (formatBillStatus(this.materialInfo.status) == '暂存') {
-				// 	showConfirm('是否提交该单据').then(res => {
-				// 		if (res.confirm) {
-				// 			this.$modal.loading("提交中");
-				// 			auditApplyGoodBill([this.billNumber]).then(res => {
-				// 				this.queryBill();
-				// 				this.$modal.closeLoading()
-				// 				this.$modal.confirm("单据撤销成功\n\r"+this.billNumber);
-				// 				// toast("提交成功")
-				// 			});
-				// 		}
-				// 	})
+				// this.$modal.confirm("更新接口暂未对接，此处仅作模拟，以下为更新所需数据\n\r TEMP "+ JSON.stringify(this.materialInfo) + "\n\r ENTRY" + JSON.stringify(this.dataList))
+				console.log("currentSelectTemp", this.currentSelectTemp)
+				console.log("materialInfo", this.materialInfo)
+				console.log("tempList", this.tempList)
 
-				// }
+				const applicationTemplate = this.tempList.find(item => item.billNumber === this.materialInfo.tempNo)
+
+
+				let entry = this.materialInfo.entry;
+				let dataEntry = [];
+				for (var i = 0; i < entry.length; i++) {
+					let item = entry[i];
+					console.log("item", item)
+					const d = {
+						// createOrgId : item.createOrgId,
+						// groupId: item.groupId,
+						entryId: item.id,
+						materialId: item.materialId,
+						materialName: item.materialName,
+						materialNumber: item.materialNumber,
+						nums: item.qty,
+						unitName: item.unitName,
+						unitNumber: item.unitNumber,
+						unitID: item.unitId,
+						// useOrgId: item.useOrgId
+					}
+					dataEntry.push(d);
+				}
+
+				let dataHead = {
+					billId: this.materialInfo.id,
+					note: this.materialInfo.note,
+					tempNo: this.materialInfo.tempNo,
+					tempName: this.materialInfo.tempName,
+					reviceOrgNumber: applicationTemplate.orgNumber,
+					applyOrgNumber: applicationTemplate.orgNumber,
+					applyDate: new Date(),
+					arrivalDate: applicationTemplate.arrivalDate,
+					entry: dataEntry
+				}
+
+				console.log("dataHead", dataHead)
+			
+				showConfirm('确认更新?').then(res => {
+					if (res.confirm) {
+					uni.showLoading({
+						title: '正在更新', // 提示信息
+						mask: true // 显示透明蒙层防止触摸穿透
+					});
+						updateApplyGood(dataHead).then(res => {
+							uni.hideLoading();
+							console.log("updateApplyGood", res)
+							uni.$emit("refreshBillInfo")
+							this.$tab.navigateBack()
+						}).catch(error=>{
+							uni.hideLoading();
+						})
+					}
+				})
+			
+
+
 			},
 			queryBill() {
 				queryApplyGood(this.billNumber).then(res => {
@@ -466,9 +502,10 @@
 			},
 			gotoSearch() {
 				console.log("this.currentSelectTemp", this.currentSelectTemp)
-						console.log("billEntry", this.dataList)
+				console.log("billEntry", this.dataList)
 				uni.setStorageSync("billEntry", this.dataList);
-				this.$tab.navigateTo('/pages/common/material-search/index?currentTempNo='+this.materialInfo.tempNo)
+				this.$tab.navigateTo('/pages/common/deliveryRequisition/material-search/index?currentTempNo=' + this
+					.materialInfo.tempNo)
 			}
 		}
 	}

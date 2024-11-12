@@ -62,7 +62,7 @@ export function formatBillStatus(status) {
 	const map = [
 		[
 			() => status == 'A' || status == 'D' || status == 'Z' || status == 'B',
-			() => "暂存"
+			() => "保存"
 		],
 		[
 			() => status == 'C',
