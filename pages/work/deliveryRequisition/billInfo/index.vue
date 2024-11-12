@@ -210,7 +210,7 @@
 </template>
 
 <script>
-	import cardv3 from '../../common/cardv3/index.vue'
+	import cardv3 from '@/pages/common/cardv3/index.vue'
 	import fabV1 from "@/pages/common/fabv1/index.vue"
 	import {
 		queryApplyGood,
@@ -298,7 +298,7 @@
 							return;
 						}
 						if (e.index == 0) {
-							this.$tab.navigateTo('/pages/work/deliveryRequisition/updateBillInfo?billNumber=' + this.billNumber)
+							this.$tab.navigateTo('/pages/work/deliveryRequisition/billInfo/edit?billNumber=' + this.billNumber)
 						}
 					},
 			onTap(e) {
@@ -360,7 +360,7 @@
 				// this.$refs.materialPaging.complete(this.materialInfo.entry)
 			},
 			gotoFilter() {
-				this.$tab.navigateTo('/pages/work/deliveryRequisition/filter')
+				this.$tab.navigateTo('/pages/work/deliveryRequisition/billInfo/filter')
 
 			}
 		}

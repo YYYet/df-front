@@ -85,7 +85,7 @@
 
 
 		}, {
-			"path": "pages/work/deliveryRequisition/billInfo",
+			"path": "pages/work/deliveryRequisition/billInfo/index",
 			"style": {
 				
 				"navigationBarTitleText": "配送申请单详情",
@@ -105,7 +105,7 @@
 
 		},
 		{
-			"path": "pages/work/deliveryRequisition/updateBillInfo",
+			"path": "pages/work/deliveryRequisition/billInfo/edit",
 			"style": {
 				"navigationBarTitleText": "配送申请单更新",
 				"enablePullDownRefresh": false
@@ -121,7 +121,7 @@
 			}
 
 		}, {
-			"path": "pages/common/cardv2/index",
+			"path": "pages/common/deliveryRequisition/cardv2/index",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
@@ -142,7 +142,7 @@
 			}
 
 		}, {
-			"path": "pages/work/deliveryRequisition/filter",
+			"path": "pages/work/deliveryRequisition/billInfo/filter",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false,
@@ -150,14 +150,14 @@
 			}
 
 		}, {
-			"path": "pages/work/itemAddition/index",
+			"path": "pages/work/deliveryRequisition/shopCart/index",
 			"style": {
 				"navigationBarTitleText": "购物车",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
-			"path": "pages/work/deliveryRequisition/edit",
+			"path": "pages/work/deliveryRequisition/add",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false,
@@ -174,28 +174,28 @@
 			}
 
 		}, {
-			"path": "pages/common/cartshop/cartshop-swiper-item/index",
+			"path": "pages/common/deliveryRequisition/cartshop/cartshop-swiper-item/index",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
-			"path": "pages/common/material-info/index",
+			"path": "pages/common/deliveryRequisition/material-info/index",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
-			"path": "pages/work/purchasedItemsViewer/index",
+			"path": "pages/work/deliveryRequisition/shopCart/purchasedItemsViewer/index",
 			"style": {
 				"navigationBarTitleText": "查看",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
-			"path": "pages/common/cartshop/cartshop-search/index",
+			"path": "pages/common/deliveryRequisition/cartshop/cartshop-search/index",
 			"style": {
 				"navigationBarTitleText": "物料搜索",
 				"enablePullDownRefresh": false
@@ -217,7 +217,7 @@
 			}
 		}
 	    ,{
-            "path" : "pages/common/material-search/index",
+            "path" : "pages/common/deliveryRequisition/material-search/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "物料搜索",

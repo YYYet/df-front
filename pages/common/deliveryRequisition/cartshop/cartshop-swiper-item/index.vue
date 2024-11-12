@@ -16,7 +16,7 @@
 		getMaterialByTabV3,
 		addOrUpDateShopV2
 	} from '@/api/system/material.js'
-	import MaterialInfo from "@/pages/common/material-info/index.vue"
+	import MaterialInfo from "@/pages/common/deliveryRequisition/material-info/index.vue"
 	export default {
 		components: {
 			'MaterialInfo': MaterialInfo

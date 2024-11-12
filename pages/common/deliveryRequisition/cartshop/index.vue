@@ -85,7 +85,7 @@
 </template>
 
 <script>
-	import cartshopSwiperItem from '@/pages/common/cartshop/cartshop-swiper-item/index.vue'
+	import cartshopSwiperItem from '@/pages/common/deliveryRequisition/cartshop/cartshop-swiper-item/index.vue'
 	import {
 		getMaterialTabs,
 		getMaterialTabsByGroupId,

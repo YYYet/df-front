@@ -17,7 +17,7 @@
 </template>
 
 <script>
-	import MaterialInfo from "@/pages/common/material-info/index.vue"
+	import MaterialInfo from "@/pages/common/deliveryRequisition/material-info/index.vue"
 	import {
 		getMaterialAddedV2, addOrUpDateShopV2
 	} from '@/api/system/material.js'
@@ -77,8 +77,8 @@
 				// 将已选购的物品加入缓存,在购物车列表的show周期内进行处理
 				// this.$store.dispatch('AddCacheMap', item)
 				console.log("加购页面列表", val, index, item)
-
-				addOrUpDateShopV2(item).then(res=>{
+				let tempNo = uni.getStorageSync("applicationTemplate").billNumber;
+				addOrUpDateShopV2(tempNo, item).then(res=>{
 					console.log("添加物品到购物车",res)
 					uni.$emit('notic2refresh', item)
 				})

@@ -90,7 +90,7 @@
 </template>
 
 <script>
-	import cardv2 from '../../common/cardv2/index.vue'
+	import cardv2 from '@/pages/common/deliveryRequisition/cardv2/index.vue'
 	import {
 		getApplyGood,getApplyGoodByCondition,unAuditApplyGoodBill,auditApplyGoodBill
 	} from '@/api/system/bill.js'
@@ -214,8 +214,6 @@
 					}
 				})
 				
-	
-	
 			},
 			queryBtnClick(isQuery){
 				if(isQuery){
@@ -227,7 +225,6 @@
 					if(this.billQueryObj.material != "" && this.billQueryObj.billNumber == ""){
 								const reg = /^[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]+$/;
 						console.log("this.isChinese(this.billQueryObj.material)", reg.test(this.billQueryObj.material), this.billQueryObj.material)
-				
 						
 						if(reg.test(this.billQueryObj.material)){
 							condition = "FMaterialName like '%"+this.billQueryObj.material+"%' ";
@@ -247,9 +244,6 @@
 						console.log("list", res)
 						this.$refs.paging.complete(list);
 					}).catch(res => {
-						// 如果请求失败写this.$refs.paging.complete(false);
-						// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-						// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 						console.log("res", res)
 						this.$refs.paging.complete(false);
 					})
@@ -275,7 +269,7 @@
 								if (_this.$refs.fab.isShow) {
 									_this.$refs.fab.close()
 								}
-								_this.$tab.navigateTo('/pages/work/deliveryRequisition/edit')
+								_this.$tab.navigateTo('/pages/work/deliveryRequisition/add')
 								console.log('用户点击确定')
 							} else if (res.cancel) {
 								console.log('用户点击取消')
@@ -307,7 +301,7 @@
 			},
 			fabClick() {
 			
-				this.$tab.navigateTo('/pages/work/deliveryRequisition/edit')
+				this.$tab.navigateTo('/pages/work/deliveryRequisition/add')
 			},
 	
 			tabChange(index) {
@@ -344,29 +338,16 @@
 						this.cardMoveOutAnimationCache[list[i].billNumber] = false;
 					}
 					this.$refs.paging.complete(list);
-					// this.$modal.closeLoading()
 				}).catch(res => {
-					// 如果请求失败写this.$refs.paging.complete(false);
-					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					console.log("res", res)
 					this.$refs.paging.complete(false);
 					
 				})
 
-				// this.$request2.queryListLong(params).then(res => {
-				// 	// 将请求的结果数组传递给z-paging
-				// 	this.$refs.paging.complete(res.data.list);
-				// }).catch(res => {
-				// 	// 如果请求失败写this.$refs.paging.complete(false);
-				// 	// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-				// 	// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
-				// 	this.$refs.paging.complete(false);
-				// })
 			},
 			itemClick(item, index) {
 				console.log('点击了', item);
-				this.$tab.navigateTo('/pages/work/deliveryRequisition/billInfo?billNumber=' + item.billNumber)
+				this.$tab.navigateTo('/pages/work/deliveryRequisition/billInfo/index?billNumber=' + item.billNumber)
 			},
 		}
 	}

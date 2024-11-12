@@ -19,7 +19,7 @@
 
 <script>
 	import SearchBar from '@/pages/common/searchBar/index.vue'
-	import MaterialInfo from "@/pages/common/material-info/index.vue"
+	import MaterialInfo from "@/pages/common/deliveryRequisition/material-info/index.vue"
 	import { getMaterialByName,getMaterialByNameV2,addOrUpDateShopV2 } from '@/api/system/material.js'
 	export default {
 		components: {
@@ -93,7 +93,8 @@
 				// 传递给cartshop-swiper-item页面,对购物车数据进行修正
 				// this.$set(this.dataList, index, item);
 				// uni.$emit("resetNumberSelectorBySearchPage", item)
-				addOrUpDateShopV2(item).then(res=>{
+				let tempNo = uni.getStorageSync("applicationTemplate").billNumber;
+				addOrUpDateShopV2(tempNo, item).then(res=>{
 					console.log("添加物品到购物车",res)
 				})
 				uni.$emit('notic2refresh', item)

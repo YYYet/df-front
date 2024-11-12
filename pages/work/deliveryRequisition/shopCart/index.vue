@@ -21,8 +21,8 @@
 </template>
 
 <script>
-	import CartShop from '@/pages/common/cartshop/index.vue'
-	import CartPay from '@/pages/common/carpay/index.vue'
+	import CartShop from '@/pages/common/deliveryRequisition/cartshop/index.vue'
+	import CartPay from '@/pages/common/deliveryRequisition/carpay/index.vue'
 	import SearchBar from '@/pages/common/searchBar/index.vue'
 	import {
 		getMaterialTabs,
@@ -200,7 +200,7 @@
 			},
 			gotoSearchPage(txt) {
 				console.log("gotoSearchPage")
-				this.$tab.navigateTo('/pages/common/cartshop/cartshop-search/index')
+				this.$tab.navigateTo('/pages/common/deliveryRequisition/cartshop/cartshop-search/index')
 			},
 			clearCache() {
 				this.columns = [];
@@ -215,7 +215,7 @@
 			},
 			clickCart() {
 				console.log("底部结算购物车图标点击")
-				this.$tab.navigateTo('/pages/work/purchasedItemsViewer/index')
+				this.$tab.navigateTo('/pages/work/deliveryRequisition/shopCart/purchasedItemsViewer/index')
 				// this.$refs.MaterialPopListPop.open()
 			},
 			resetColumnsValue(columns) {

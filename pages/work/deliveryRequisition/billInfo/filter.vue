@@ -5,7 +5,7 @@
 </template>
 
 <script>
-	import filterv1 from '../../common/filterv1/index.vue'
+	import filterv1 from '@/pages/common/filterv1/index.vue'
 	export default {
 			 components: {
 				    // 注册组件

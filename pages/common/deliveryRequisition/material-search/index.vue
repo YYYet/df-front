@@ -20,7 +20,7 @@
 
 <script>
 	import SearchBar from '@/pages/common/searchBar/index.vue'
-	import MaterialInfo from "@/pages/common/material-info/index.vue"
+	import MaterialInfo from "@/pages/common/deliveryRequisition/material-info/index.vue"
 	import {
 		getMaterialByName,
 		getMaterialByNameV2,

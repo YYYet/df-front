@@ -194,7 +194,7 @@
 					this.$store.dispatch('SetColumnIdIndexCacheMap', this.columnIdIndexCache)
 
 					uni.hideLoading()
-					this.$tab.navigateTo('/pages/work/itemAddition/index')
+					this.$tab.navigateTo('/pages/work/deliveryRequisition/shopCart/index')
 				}).catch(res => {
 					console.log(" edit queryTabsList", res)
 					uni.hideLoading()

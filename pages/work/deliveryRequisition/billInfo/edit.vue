@@ -227,9 +227,9 @@
 </template>
 
 <script>
-	import cardv3 from '../../common/cardv3/index.vue'
-	import cardv4 from '../../common/cardv4/index.vue'
-	import fabV1 from "@/pages/common/fabv1/index.vue"
+	import cardv3 from '@/pages/common/cardv3/index.vue'
+	import cardv4 from '@/pages/common/cardv4/index.vue'
+	import MaterialInfo from "@/pages/common/deliveryRequisition/material-info/index.vue"
 	import {
 		queryApplyGood,
 		unAuditApplyGoodBill,
@@ -242,13 +242,12 @@
 		toast
 	} from '@/utils/common.js'
 
-	import MaterialInfo from "@/pages/common/material-info/index.vue"
+
 	export default {
 		components: {
 			// 注册组件
 			'cardv3': cardv3,
 			'cardv4': cardv4,
-			'fabv1': fabV1,
 			'MaterialInfo': MaterialInfo
 		},
 		data() {
