@@ -117,7 +117,8 @@
 						</label>
 					</uni-row>
 					<uni-row>
-						<u--textarea v-model="materialInfo.note" placeholder="请输入内容"></u--textarea>
+						<!-- placeholder -->
+						<u--textarea v-model="materialInfo.note" ></u--textarea>
 					</uni-row>
 				</view>
 
